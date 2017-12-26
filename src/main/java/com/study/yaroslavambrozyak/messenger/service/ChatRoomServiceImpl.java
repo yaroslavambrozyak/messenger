@@ -14,7 +14,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private ChatRoomRepository chatRoomRepository;
     @Autowired
     private UserService userService;
-    
+
     @Override
     public void createChatRoom(ChatRoomDTO chatRoomDTO) {
         ChatRoom chatRoom = new ChatRoom();
