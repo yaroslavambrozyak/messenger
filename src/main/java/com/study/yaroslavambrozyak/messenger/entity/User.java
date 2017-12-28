@@ -1,6 +1,7 @@
 package com.study.yaroslavambrozyak.messenger.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -21,7 +22,8 @@ public class User {
     private String name;
     @NotBlank
     private String surName;
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "usersInRoom")
+    @ManyToMany(mappedBy = "usersInRoom")
+    @JsonManagedReference
     private Set<ChatRoom> userChatRooms = new HashSet<>();
 
     public long getId() {
