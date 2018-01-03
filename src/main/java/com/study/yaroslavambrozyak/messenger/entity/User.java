@@ -10,13 +10,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="user_acc")
+@Table(name = "user_acc")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id",updatable = false,unique = true)
+    @Column(name = "user_id", updatable = false, unique = true)
     private long id;
     @NotBlank
     private String name;
@@ -25,6 +25,7 @@ public class User {
     @ManyToMany(mappedBy = "usersInRoom")
     @JsonManagedReference
     private Set<ChatRoom> userChatRooms = new HashSet<>();
+    private String password;
 
     public long getId() {
         return id;
@@ -56,5 +57,13 @@ public class User {
 
     public void setUserChatRooms(Set<ChatRoom> userChatRooms) {
         this.userChatRooms = userChatRooms;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

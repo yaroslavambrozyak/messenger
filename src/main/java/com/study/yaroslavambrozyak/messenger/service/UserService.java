@@ -9,6 +9,7 @@ import java.util.Set;
 public interface UserService {
 
     User getUserById(Long id);
+    User getUserByUserName(String userName);
     void createUser(RegistrationDTO registrationDTO);
     void updateUser(User user);
     void deleteUser(Long id);

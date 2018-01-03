@@ -25,6 +25,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByUserName(String userName) {
+        return userRepository.getByName(userName);
+    }
+
+    @Override
     public void createUser(RegistrationDTO registrationDTO) {
         User user = new User();
         user.setName(registrationDTO.getName());
