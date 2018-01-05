@@ -13,6 +13,7 @@ public interface UserService {
     void createUser(RegistrationDTO registrationDTO);
     void updateUser(User user);
     void deleteUser(Long id);
+    Long getUserIdByName(String name);
 
     Set<ChatRoom> getUserChats(Long id);
 }

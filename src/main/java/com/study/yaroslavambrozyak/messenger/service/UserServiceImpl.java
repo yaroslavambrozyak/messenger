@@ -5,6 +5,7 @@ import com.study.yaroslavambrozyak.messenger.entity.ChatRoom;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.entity.User;
 import com.study.yaroslavambrozyak.messenger.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,10 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long id) {
@@ -31,10 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(RegistrationDTO registrationDTO) {
-        User user = new User();
-        user.setName(registrationDTO.getName());
-        user.setSurName(registrationDTO.getSurName());
-        userRepository.save(user);
+        userRepository.save(modelMapper.map(registrationDTO,User.class));
     }
 
     @Override
@@ -51,7 +52,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Long getUserIdByName(String name) {
+        return userRepository.getUserId(name);
+    }
+
+    @Override
     public Set<ChatRoom> getUserChats(Long id) {
-        return null;
+        return getUserById(id).getUserChatRooms();
     }
 }

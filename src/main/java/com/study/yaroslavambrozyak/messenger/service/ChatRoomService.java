@@ -9,5 +9,4 @@ public interface ChatRoomService {
     ChatRoom getChatRoom(long id);
     void createChatRoom(ChatRoomDTO chatRoomDTO);
     void addUserToChat(long chatRoomId, long userId);
-    void addMessage(Message message);
 }

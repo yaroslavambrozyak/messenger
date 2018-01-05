@@ -1,7 +1,5 @@
 package com.study.yaroslavambrozyak.messenger.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,18 +8,17 @@ import java.util.Set;
 public class ChatRoom {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Column(name = "chat_id", updatable = false, unique = true)
     private long id;
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_room",
             joinColumns = @JoinColumn(name = "chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @JsonBackReference
     private Set<User> usersInRoom = new HashSet<>();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "chatRoom")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "chatRoom")
     private Set<Message> messages = new HashSet<>();
 
     public long getId() {

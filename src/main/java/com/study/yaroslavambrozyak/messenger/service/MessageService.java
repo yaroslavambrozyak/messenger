@@ -4,6 +4,6 @@ import com.study.yaroslavambrozyak.messenger.dto.MessageDTO;
 
 public interface MessageService {
 
-    void saveMessage(MessageDTO messageDTO);
+    void saveMessage(MessageDTO messageDTO,long chatId);
 
 }

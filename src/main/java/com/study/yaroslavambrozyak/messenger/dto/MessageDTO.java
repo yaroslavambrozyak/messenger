@@ -1,18 +1,13 @@
 package com.study.yaroslavambrozyak.messenger.dto;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 public class MessageDTO {
 
+    @NotBlank
     private String text;
+    @NotBlank
     private long userId;
-    private long chatId;
-
-    public MessageDTO() {
-    }
-
-    public MessageDTO(String text, long userId) {
-        this.text = text;
-        this.userId = userId;
-    }
 
     public String getText() {
         return text;
@@ -30,11 +25,4 @@ public class MessageDTO {
         this.userId = userId;
     }
 
-    public long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
-    }
 }

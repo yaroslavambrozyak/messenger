@@ -6,12 +6,13 @@ import javax.persistence.*;
 public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
     private String text;
-    private long senderId;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_id",nullable = false)
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id", nullable = false)
     private ChatRoom chatRoom;
 
     public long getId() {
@@ -30,12 +31,12 @@ public class Message {
         this.text = text;
     }
 
-    public long getSenderId() {
-        return senderId;
+    public User getUser() {
+        return user;
     }
 
-    public void setSenderId(long senderId) {
-        this.senderId = senderId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public ChatRoom getChatRoom() {

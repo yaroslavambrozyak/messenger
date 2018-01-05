@@ -3,6 +3,7 @@ package com.study.yaroslavambrozyak.messenger.config;
 import com.study.yaroslavambrozyak.messenger.security.JWTAuthenticationFilter;
 import com.study.yaroslavambrozyak.messenger.security.JWTLoginFilter;
 import com.study.yaroslavambrozyak.messenger.service.UserDetailsServiceImpl;
+import com.study.yaroslavambrozyak.messenger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,14 +21,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers(HttpMethod.POST,"/login").permitAll()
+                .antMatchers(HttpMethod.POST,"/app/login").permitAll()
+                .antMatchers(HttpMethod.POST,"/app/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
+                .addFilterBefore(new JWTLoginFilter("/app/login", authenticationManager(),userService),
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JWTAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class);
@@ -35,11 +39,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Create a default account
-        /*auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password("password")
-                .roles("ADMIN");*/
         auth.userDetailsService(userDetailsService);
     }
 }

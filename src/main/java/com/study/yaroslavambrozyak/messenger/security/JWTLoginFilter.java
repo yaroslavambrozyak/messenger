@@ -1,7 +1,9 @@
 package com.study.yaroslavambrozyak.messenger.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.yaroslavambrozyak.messenger.entity.User;
 import com.study.yaroslavambrozyak.messenger.service.TokenAuthenticationService;
+import com.study.yaroslavambrozyak.messenger.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,21 +20,26 @@ import java.util.Collections;
 
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
-    public JWTLoginFilter(String url, AuthenticationManager authManager) {
+    private UserService userService;
+
+    public JWTLoginFilter(String url, AuthenticationManager authManager, UserService userService) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authManager);
+        this.userService = userService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
             throws AuthenticationException, IOException, ServletException {
-        return getAuthenticationManager().authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        req.getParameter("userName"),
-                        req.getParameter("password"),
-                        Collections.emptyList()
-                )
+        String userName = req.getParameter("userName");
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                userName,
+                req.getParameter("password"),
+                Collections.emptyList()
         );
+        Authentication authentication = getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
+        if (authentication.isAuthenticated()) res.addHeader("id", String.valueOf(userService.getUserIdByName(userName)));
+        return authentication;
     }
 
     @Override

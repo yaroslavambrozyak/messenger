@@ -5,6 +5,7 @@ import com.study.yaroslavambrozyak.messenger.entity.ChatRoom;
 import com.study.yaroslavambrozyak.messenger.entity.Message;
 import com.study.yaroslavambrozyak.messenger.entity.User;
 import com.study.yaroslavambrozyak.messenger.repository.ChatRoomRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private ChatRoomRepository chatRoomRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public ChatRoom getChatRoom(long id) {
@@ -23,8 +26,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public void createChatRoom(ChatRoomDTO chatRoomDTO) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.setName(chatRoomDTO.getName());
+        ChatRoom chatRoom = modelMapper.map(chatRoomDTO,ChatRoom.class);
         User user = userService.getUserById(chatRoomDTO.getCreatorId());
         chatRoom.getUsersInRoom().add(user);
         chatRoomRepository.save(chatRoom);
@@ -38,10 +40,4 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         chatRoomRepository.save(chatRoom);
     }
 
-    @Override
-    public void addMessage(Message message) {
-        ChatRoom chat = chatRoomRepository.getOne(3L);
-        chat.getMessages().add(message);
-        chatRoomRepository.save(chat);
-    }
 }

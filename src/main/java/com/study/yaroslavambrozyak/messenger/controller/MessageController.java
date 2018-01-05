@@ -8,8 +8,11 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 public class MessageController {
@@ -19,8 +22,8 @@ public class MessageController {
 
     @MessageMapping("/chat/{id}")
     @SendTo("/topic/{id}")
-    public MessageDTO message(@DestinationVariable("id") long id, MessageDTO messageDTO) throws InterruptedException {
-        messageService.saveMessage(messageDTO);
+    public MessageDTO message(@DestinationVariable("id") long id, @Validated MessageDTO messageDTO) throws InterruptedException {
+        messageService.saveMessage(messageDTO,id);
         return messageDTO;
     }
 
