@@ -28,7 +28,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void saveMessage(MessageDTO messageDTO,long chatId) {
         Message message = modelMapper.map(messageDTO,Message.class);
-        User user = userService.getUserById(messageDTO.getUserId());
+        User user = userService.getUserEntity(messageDTO.getUserId());
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatId);
         message.setUser(user);
         message.setChatRoom(chatRoom);

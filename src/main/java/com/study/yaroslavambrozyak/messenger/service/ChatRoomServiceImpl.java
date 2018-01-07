@@ -27,14 +27,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public void createChatRoom(ChatRoomDTO chatRoomDTO) {
         ChatRoom chatRoom = modelMapper.map(chatRoomDTO,ChatRoom.class);
-        User user = userService.getUserById(chatRoomDTO.getCreatorId());
+        User user = userService.getUserEntity(chatRoomDTO.getCreatorId());
         chatRoom.getUsersInRoom().add(user);
         chatRoomRepository.save(chatRoom);
     }
 
     @Override
     public void addUserToChat(long chatRoomId, long userId) {
-        User user = userService.getUserById(userId);
+        User user = userService.getUserEntity(userId);
         ChatRoom chatRoom = chatRoomRepository.getOne(chatRoomId);
         chatRoom.getUsersInRoom().add(user);
         chatRoomRepository.save(chatRoom);

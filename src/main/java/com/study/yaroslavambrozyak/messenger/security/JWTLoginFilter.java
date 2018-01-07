@@ -31,14 +31,14 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
             throws AuthenticationException, IOException, ServletException {
-        String userName = req.getParameter("userName");
+        String userName = req.getParameter("email");
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 userName,
                 req.getParameter("password"),
                 Collections.emptyList()
         );
         Authentication authentication = getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
-        if (authentication.isAuthenticated()) res.addHeader("id", String.valueOf(userService.getUserIdByName(userName)));
+        //if (authentication.isAuthenticated()) res.addHeader("id", String.valueOf(userService.getUserIdByName(userName)));
         return authentication;
     }
 

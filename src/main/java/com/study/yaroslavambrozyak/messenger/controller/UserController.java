@@ -2,6 +2,7 @@ package com.study.yaroslavambrozyak.messenger.controller;
 
 import com.study.yaroslavambrozyak.messenger.dto.ChatRoomDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserDTO;
+import com.study.yaroslavambrozyak.messenger.dto.UserUpdateDTO;
 import com.study.yaroslavambrozyak.messenger.entity.ChatRoom;
 import com.study.yaroslavambrozyak.messenger.entity.User;
 import com.study.yaroslavambrozyak.messenger.service.UserService;
@@ -22,27 +23,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @GetMapping("/user/{id}")
     public UserDTO getUser(@PathVariable("id") Long id) {
-        User user = userService.getUserById(id);
-        return modelMapper.map(user, UserDTO.class);
+        return userService.getUserById(id);
     }
 
     @GetMapping("/user/{id}/chats")
     public Set<ChatRoomDTO> getUserChats(@PathVariable("id") Long id) {
-        return userService.getUserChats(id)
-                .stream()
-                .map(chatRoom -> modelMapper.map(chatRoom, ChatRoomDTO.class))
-                .collect(Collectors.toSet());
+        return userService.getUserChats(id);
     }
 
-    //TODO change to userDto
     @PutMapping("/user/{id}")
-    public ResponseEntity<Void> updateUser(User user) {
-        userService.updateUser(user);
+    public ResponseEntity<Void> updateUser(@PathVariable("id") long id, UserUpdateDTO user) {
+        userService.updateUser(user,id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

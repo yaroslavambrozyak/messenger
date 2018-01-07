@@ -21,6 +21,7 @@ public class User {
     private Set<ChatRoom> userChatRooms = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
     private Set<Message> messages = new HashSet<>();
+    @Column(unique = true)
     private String email;
     private String password;
 
