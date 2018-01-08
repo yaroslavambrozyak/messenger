@@ -2,6 +2,8 @@ package com.study.yaroslavambrozyak.messenger.controller;
 
 import com.study.yaroslavambrozyak.messenger.dto.MessageDTO;
 import com.study.yaroslavambrozyak.messenger.entity.Message;
+import com.study.yaroslavambrozyak.messenger.exception.ChatRoomNotFoundException;
+import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -22,7 +24,7 @@ public class MessageController {
 
     @MessageMapping("/chat/{id}")
     @SendTo("/topic/{id}")
-    public MessageDTO message(@DestinationVariable("id") long id, @Validated MessageDTO messageDTO) throws InterruptedException {
+    public MessageDTO message(@DestinationVariable("id") long id, @Validated MessageDTO messageDTO) throws InterruptedException, UserNotFoundException, ChatRoomNotFoundException {
         messageService.saveMessage(messageDTO,id);
         return messageDTO;
     }

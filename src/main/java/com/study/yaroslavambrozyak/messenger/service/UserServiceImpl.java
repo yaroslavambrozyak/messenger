@@ -14,10 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(rollbackFor = {UserNotFoundException.class})
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -27,23 +29,21 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
 
     @Override
-    public User getUserEntity(Long id) {
-        User user = userRepository.getOne(id);
-        if (user==null){
-            throw new UserNotFoundException();
-        }
-        return user;
+    public User getUserEntity(Long id) throws UserNotFoundException {
+        return Optional.ofNullable(userRepository.findOne(id))
+                .orElseThrow(() -> new UserNotFoundException("Cant find user with id: " + id));
     }
 
     @Override
-    public UserDTO getUserById(Long id) {
-        User user = userRepository.getOne(id);
-        return modelMapper.map(userRepository.getOne(id), UserDTO.class);
+    public UserDTO getUserById(Long id) throws UserNotFoundException {
+        return modelMapper.map(getUserEntity(id), UserDTO.class);
     }
 
     @Override
-    public UserDTO getUserByUserName(String userName) {
-        return modelMapper.map(userRepository.getByName(userName), UserDTO.class);
+    public UserDTO getUserByUserName(String userName) throws UserNotFoundException {
+        User user = Optional.ofNullable(userRepository.getByName(userName))
+                .orElseThrow(() -> new UserNotFoundException("Cant find user with name: " + userName));
+        return modelMapper.map(user, UserDTO.class);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserUpdateDTO user, long id) {
-        User userToUpdate = userRepository.getOne(id);
+    public void updateUser(UserUpdateDTO user, long id) throws UserNotFoundException {
+        User userToUpdate = getUserEntity(id);
         NullAwareBeanUtil.copyProperties(user, userToUpdate);
         userToUpdate.setId(id);
         userRepository.save(userToUpdate);
@@ -70,8 +70,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<ChatRoomDTO> getUserChats(Long id) {
-        return userRepository.getOne(id)
+    public Set<ChatRoomDTO> getUserChats(Long id) throws UserNotFoundException {
+        return getUserEntity(id)
                 .getUserChatRooms()
                 .stream()
                 .map(chatRoom -> modelMapper.map(chatRoom, ChatRoomDTO.class))

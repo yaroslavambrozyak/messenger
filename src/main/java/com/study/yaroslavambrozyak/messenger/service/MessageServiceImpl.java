@@ -4,6 +4,8 @@ import com.study.yaroslavambrozyak.messenger.dto.MessageDTO;
 import com.study.yaroslavambrozyak.messenger.entity.ChatRoom;
 import com.study.yaroslavambrozyak.messenger.entity.Message;
 import com.study.yaroslavambrozyak.messenger.entity.User;
+import com.study.yaroslavambrozyak.messenger.exception.ChatRoomNotFoundException;
+import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.repository.ChatRoomRepository;
 import com.study.yaroslavambrozyak.messenger.repository.MessageRepository;
 import org.modelmapper.ModelMapper;
@@ -26,10 +28,10 @@ public class MessageServiceImpl implements MessageService {
     private ModelMapper modelMapper;
 
     @Override
-    public void saveMessage(MessageDTO messageDTO,long chatId) {
+    public void saveMessage(MessageDTO messageDTO,long chatId) throws UserNotFoundException, ChatRoomNotFoundException {
         Message message = modelMapper.map(messageDTO,Message.class);
         User user = userService.getUserEntity(messageDTO.getUserId());
-        ChatRoom chatRoom = chatRoomService.getChatRoom(chatId);
+        ChatRoom chatRoom = chatRoomService.getChatRoomEntity(chatId);
         message.setUser(user);
         message.setChatRoom(chatRoom);
         messageRepository.save(message);

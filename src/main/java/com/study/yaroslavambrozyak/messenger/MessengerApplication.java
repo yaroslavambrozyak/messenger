@@ -2,10 +2,14 @@ package com.study.yaroslavambrozyak.messenger;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan
+@EnableAutoConfiguration
 public class MessengerApplication {
 
 	public static void main(String[] args) {

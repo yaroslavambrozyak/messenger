@@ -1,6 +1,7 @@
 package com.study.yaroslavambrozyak.messenger.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.NotFound;
 
 import javax.persistence.*;
 import java.util.HashSet;
