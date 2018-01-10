@@ -12,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class MessageServiceImpl implements MessageService {
 
@@ -28,12 +30,13 @@ public class MessageServiceImpl implements MessageService {
     private ModelMapper modelMapper;
 
     @Override
-    public void saveMessage(MessageDTO messageDTO,long chatId) throws UserNotFoundException, ChatRoomNotFoundException {
-        Message message = modelMapper.map(messageDTO,Message.class);
-        User user = userService.getUserEntity(messageDTO.getUserId());
+    public void saveMessage(MessageDTO messageDTO, long chatId) throws UserNotFoundException, ChatRoomNotFoundException {
         ChatRoom chatRoom = chatRoomService.getChatRoomEntity(chatId);
+        Message message = modelMapper.map(messageDTO, Message.class);
+        User user = userService.getUserEntity(messageDTO.getUserId());
         message.setUser(user);
         message.setChatRoom(chatRoom);
         messageRepository.save(message);
     }
+
 }

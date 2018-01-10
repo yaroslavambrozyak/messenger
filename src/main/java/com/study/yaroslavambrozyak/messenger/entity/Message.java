@@ -46,4 +46,6 @@ public class Message {
     public void setChatRoom(ChatRoom chatRoom) {
         this.chatRoom = chatRoom;
     }
+
+
 }

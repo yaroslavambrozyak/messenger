@@ -6,10 +6,7 @@ public class ChatRoomDTO {
 
     @NotBlank
     private String name;
-    @NotBlank
-    private long creatorId;
-
-
+    
     public String getName() {
         return name;
     }
@@ -18,11 +15,4 @@ public class ChatRoomDTO {
         this.name = name;
     }
 
-    public long getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(long creatorId) {
-        this.creatorId = creatorId;
-    }
 }

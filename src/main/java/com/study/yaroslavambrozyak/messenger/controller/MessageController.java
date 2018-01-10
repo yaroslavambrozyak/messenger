@@ -24,9 +24,9 @@ public class MessageController {
 
     @MessageMapping("/chat/{id}")
     @SendTo("/topic/{id}")
-    public MessageDTO message(@DestinationVariable("id") long id, @Validated MessageDTO messageDTO) throws InterruptedException, UserNotFoundException, ChatRoomNotFoundException {
+    public MessageDTO message(@DestinationVariable("id") long id, @Validated MessageDTO messageDTO)
+            throws InterruptedException, UserNotFoundException, ChatRoomNotFoundException {
         messageService.saveMessage(messageDTO,id);
         return messageDTO;
     }
-
 }

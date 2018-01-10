@@ -6,7 +6,6 @@ public class MessageDTO {
 
     @NotBlank
     private String text;
-    @NotBlank
     private long userId;
 
     public String getText() {

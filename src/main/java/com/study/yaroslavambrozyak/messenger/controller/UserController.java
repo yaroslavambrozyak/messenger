@@ -30,7 +30,8 @@ public class UserController {
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable("id") long id, UserUpdateDTO user) throws UserNotFoundException {
+    public ResponseEntity<Void> updateUser(@PathVariable("id") long id, UserUpdateDTO user)
+            throws UserNotFoundException {
         userService.updateUser(user,id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

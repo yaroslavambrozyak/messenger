@@ -12,10 +12,10 @@ import java.util.Set;
 
 public interface ChatRoomService {
 
-    ChatRoomDTO getChatRoom(long id) throws ChatRoomNotFoundException;
-    void createChatRoom(ChatRoomDTO chatRoomDTO) throws UserNotFoundException;
+    ChatRoomDTO getChatRoom(long id) throws ChatRoomNotFoundException, UserNotFoundException;
+    long createChatRoom(ChatRoomDTO chatRoomDTO) throws UserNotFoundException;
     void addUserToChat(long chatRoomId, long userId) throws UserNotFoundException, ChatRoomNotFoundException;
-    Set<MessageDTO> getChatMessages(long id) throws ChatRoomNotFoundException;
-    Set<UserDTO> getUsersInChat(long id) throws ChatRoomNotFoundException;
-    ChatRoom getChatRoomEntity(long id) throws ChatRoomNotFoundException;
+    Set<MessageDTO> getChatMessages(long id) throws ChatRoomNotFoundException, UserNotFoundException;
+    Set<UserDTO> getUsersInChat(long id) throws ChatRoomNotFoundException, UserNotFoundException;
+    ChatRoom getChatRoomEntity(long id) throws ChatRoomNotFoundException, UserNotFoundException;
 }

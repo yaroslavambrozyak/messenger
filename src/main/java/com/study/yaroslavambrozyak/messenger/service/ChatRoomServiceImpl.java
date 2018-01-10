@@ -9,9 +9,16 @@ import com.study.yaroslavambrozyak.messenger.entity.User;
 import com.study.yaroslavambrozyak.messenger.exception.ChatRoomNotFoundException;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.repository.ChatRoomRepository;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
@@ -28,34 +35,38 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private ModelMapper modelMapper;
 
     @Override
-    public ChatRoom getChatRoomEntity(long id) throws ChatRoomNotFoundException {
-        return Optional.ofNullable(chatRoomRepository.findOne(id))
+    @Transactional(propagation= Propagation.REQUIRED, readOnly=true, noRollbackFor=Exception.class)
+    public ChatRoom getChatRoomEntity(long id) throws ChatRoomNotFoundException, UserNotFoundException {
+        ChatRoom chatRoom = Optional.ofNullable(chatRoomRepository.findOne(id))
                 .orElseThrow(() -> new ChatRoomNotFoundException("Cant find chat with id: " + id));
+        if (!checkIsUserExist(chatRoom))
+            throw new UserNotFoundException("User not in room");
+        return chatRoom;
     }
 
     @Override
-    public ChatRoomDTO getChatRoom(long id) throws ChatRoomNotFoundException {
+    public ChatRoomDTO getChatRoom(long id) throws ChatRoomNotFoundException, UserNotFoundException {
         return modelMapper.map(getChatRoomEntity(id), ChatRoomDTO.class);
     }
 
     @Override
-    public void createChatRoom(ChatRoomDTO chatRoomDTO) throws UserNotFoundException {
+    public long createChatRoom(ChatRoomDTO chatRoomDTO) throws UserNotFoundException {
         ChatRoom chatRoom = modelMapper.map(chatRoomDTO, ChatRoom.class);
-        User user = userService.getUserEntity(chatRoomDTO.getCreatorId());
+        User user = userService.getCurrentUser();
         chatRoom.getUsersInRoom().add(user);
-        chatRoomRepository.save(chatRoom);
+        return chatRoomRepository.save(chatRoom).getId();
     }
 
     @Override
     public void addUserToChat(long chatRoomId, long userId) throws UserNotFoundException, ChatRoomNotFoundException {
+        ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
         User user = userService.getUserEntity(userId);
-        ChatRoom chatRoom = getChatRoomEntity(userId);
         chatRoom.getUsersInRoom().add(user);
         chatRoomRepository.save(chatRoom);
     }
 
     @Override
-    public Set<MessageDTO> getChatMessages(long id) throws ChatRoomNotFoundException {
+    public Set<MessageDTO> getChatMessages(long id) throws ChatRoomNotFoundException, UserNotFoundException {
         return getChatRoomEntity(id)
                 .getMessages()
                 .stream()
@@ -64,7 +75,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public Set<UserDTO> getUsersInChat(long id) throws ChatRoomNotFoundException {
+    public Set<UserDTO> getUsersInChat(long id) throws ChatRoomNotFoundException, UserNotFoundException {
         return getChatRoomEntity(id)
                 .getUsersInRoom()
                 .stream()
@@ -77,6 +88,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         messageDTO.setText(message.getText());
         messageDTO.setUserId(message.getUser().getId());
         return messageDTO;
+    }
+
+    private boolean checkIsUserExist(ChatRoom chatRoom) {
+        User user = userService.getCurrentUser();
+        return chatRoom.getUsersInRoom()
+                .parallelStream()
+                .anyMatch(userIn -> userIn.getId() == user.getId());
     }
 
 }

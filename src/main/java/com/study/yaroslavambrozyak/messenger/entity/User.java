@@ -5,6 +5,7 @@ import org.hibernate.annotations.NotFound;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -73,6 +74,5 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
 }

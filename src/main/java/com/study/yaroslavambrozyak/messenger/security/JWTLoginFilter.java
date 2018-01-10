@@ -1,9 +1,7 @@
 package com.study.yaroslavambrozyak.messenger.security;
 
-import com.study.yaroslavambrozyak.messenger.entity.User;
 import com.study.yaroslavambrozyak.messenger.service.TokenAuthenticationService;
 import com.study.yaroslavambrozyak.messenger.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,7 +36,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
                 Collections.emptyList()
         );
         Authentication authentication = getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
-        //if (authentication.isAuthenticated()) res.addHeader("id", String.valueOf(userService.getUserIdByName(userName)));
+        if (authentication.isAuthenticated()) res.addHeader("id", String.valueOf(userService.getUserIdByName(userName)));
         return authentication;
     }
 

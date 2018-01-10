@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 public interface UserRepository extends JpaRepository<User,Long> {
-    User getByName(String name);
-    User getByEmail(String email);
-    @Query(value = "SELECT u.id FROM User u WHERE u.name=?1")
-    Long getUserId(String name);
+    User findByName(String name);
+    User findByEmail(String email);
+    @Query(value = "SELECT u.id FROM User u WHERE u.email=?1")
+    Long getUserId(String email);
 }

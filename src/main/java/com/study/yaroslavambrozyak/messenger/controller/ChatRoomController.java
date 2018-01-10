@@ -26,28 +26,32 @@ public class ChatRoomController {
     private ChatRoomService chatRoomService;
 
     @GetMapping("/chat/{id}")
-    public ChatRoomDTO getChatRoom(@PathVariable("id") long id) throws ChatRoomNotFoundException{
+    public ChatRoomDTO getChatRoom(@PathVariable("id") long id)
+            throws ChatRoomNotFoundException, UserNotFoundException {
         return chatRoomService.getChatRoom(id);
     }
 
     @GetMapping("/chat/{id}/messages")
-    public Set<MessageDTO> getChatMessages(@PathVariable("id") long id) throws ChatRoomNotFoundException {
+    public Set<MessageDTO> getChatMessages(@PathVariable("id") long id)
+            throws ChatRoomNotFoundException, UserNotFoundException {
         return chatRoomService.getChatMessages(id);
     }
 
     @GetMapping("/chat/{id}/users")
-    public Set<UserDTO> getUsersInChat(@PathVariable("id") long id) throws ChatRoomNotFoundException {
+    public Set<UserDTO> getUsersInChat(@PathVariable("id") long id)
+            throws ChatRoomNotFoundException, UserNotFoundException {
         return chatRoomService.getUsersInChat(id);
     }
 
     @PostMapping("/chat")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createChatRoom(@Validated ChatRoomDTO chatRoomDTO) throws UserNotFoundException {
-        chatRoomService.createChatRoom(chatRoomDTO);
+    public long createChatRoom(@Validated ChatRoomDTO chatRoomDTO) throws UserNotFoundException {
+        return chatRoomService.createChatRoom(chatRoomDTO);
     }
 
     @PostMapping("/chat/{chatId}/add/{userId}")
-    public void addUserToChat(@PathVariable("chatId") long chatId, @PathVariable("userId") long userId) throws UserNotFoundException, ChatRoomNotFoundException {
-        chatRoomService.addUserToChat(chatId,userId);
+    public void addUserToChat(@PathVariable("chatId") long chatId, @PathVariable("userId") long userId)
+            throws UserNotFoundException, ChatRoomNotFoundException {
+        chatRoomService.addUserToChat(chatId, userId);
     }
 }

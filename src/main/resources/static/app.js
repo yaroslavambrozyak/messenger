@@ -35,7 +35,8 @@ function disconnect() {
 }
 
 function sendName() {
-    stompClient.send("/app/chat/3", {}, JSON.stringify({'text': $("#name").val(),'userId':1,'chatId':3}));
+    stompClient.send("/app/chat/3", {'Authorization':'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImV4cCI6MTUxNjMxMjcwMH0.MQpHzel5lVG6VTyhxOm6VKMBFrD2-RCIwhlZCFV4JTHLohM_Ds6Y61zT32F2aiT-sgs8mdCxum3tt0OXSdPSew'}
+    , JSON.stringify({'text': $("#name").val(),'userId':1}));
 }
 
 function showGreeting(message) {

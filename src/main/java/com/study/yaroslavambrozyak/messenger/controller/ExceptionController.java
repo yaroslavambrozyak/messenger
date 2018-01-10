@@ -2,6 +2,7 @@ package com.study.yaroslavambrozyak.messenger.controller;
 
 import com.study.yaroslavambrozyak.messenger.entity.ChatRoom;
 import com.study.yaroslavambrozyak.messenger.exception.ChatRoomNotFoundException;
+import com.study.yaroslavambrozyak.messenger.exception.UserAlreadyExists;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,8 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> serverException(){
-        return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(UserAlreadyExists.class)
+    public ResponseEntity<String> userAlreadyExist(UserAlreadyExists ex){
+        return new ResponseEntity<>(ex.getMessage(),HttpStatus.CONFLICT);
     }
-
 }
