@@ -1,12 +1,18 @@
 package com.study.yaroslavambrozyak.messenger.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 public class ChatRoomDTO {
 
-    @NotBlank
+    private long id;
     private String name;
-    
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }

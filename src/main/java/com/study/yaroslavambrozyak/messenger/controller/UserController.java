@@ -6,6 +6,8 @@ import com.study.yaroslavambrozyak.messenger.dto.UserUpdateDTO;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,19 +27,18 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}/chats")
-    public Set<ChatRoomDTO> getUserChats(@PathVariable("id") Long id) throws UserNotFoundException {
-        return userService.getUserChats(id);
+    public Page<ChatRoomDTO> getUserChats(@PathVariable("id") Long id, Pageable pageable) throws UserNotFoundException {
+        return userService.getUserChats(id,pageable);
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable("id") long id, UserUpdateDTO user)
+    public void updateUser(@PathVariable("id") long id, UserUpdateDTO user)
             throws UserNotFoundException {
         userService.updateUser(user,id);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/user/{id}")
-    public void deleteUser(@PathVariable("id") Long id) {
+    public void deleteUser(@PathVariable("id") Long id) throws UserNotFoundException {
         userService.deleteUser(id);
     }
 }

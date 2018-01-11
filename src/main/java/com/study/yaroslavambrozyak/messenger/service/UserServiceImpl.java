@@ -4,7 +4,7 @@ import com.study.yaroslavambrozyak.messenger.dto.ChatRoomDTO;
 import com.study.yaroslavambrozyak.messenger.dto.RegistrationDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserUpdateDTO;
-import com.study.yaroslavambrozyak.messenger.entity.ChatRoom;
+
 import com.study.yaroslavambrozyak.messenger.exception.UserAlreadyExists;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.entity.User;
@@ -12,13 +12,13 @@ import com.study.yaroslavambrozyak.messenger.repository.UserRepository;
 import com.study.yaroslavambrozyak.messenger.util.NullAwareBeanUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,11 +85,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<ChatRoomDTO> getUserChats(Long id) throws UserNotFoundException {
-        return getUserEntity(id)
-                .getUserChatRooms()
-                .stream()
-                .map(chatRoom -> modelMapper.map(chatRoom, ChatRoomDTO.class))
-                .collect(Collectors.toSet());
+    public Page<ChatRoomDTO> getUserChats(Long id, Pageable pageable) throws UserNotFoundException {
+        return userRepository.getChatRoom(id, pageable)
+                .map(chatRoom -> modelMapper.map(chatRoom,ChatRoomDTO.class));
+
     }
 }

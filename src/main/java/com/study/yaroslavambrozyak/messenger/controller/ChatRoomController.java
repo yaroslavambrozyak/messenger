@@ -1,5 +1,6 @@
 package com.study.yaroslavambrozyak.messenger.controller;
 
+import com.study.yaroslavambrozyak.messenger.dto.ChatRoomCreateDTO;
 import com.study.yaroslavambrozyak.messenger.dto.ChatRoomDTO;
 import com.study.yaroslavambrozyak.messenger.dto.MessageDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserDTO;
@@ -9,6 +10,8 @@ import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.service.ChatRoomService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -32,21 +35,21 @@ public class ChatRoomController {
     }
 
     @GetMapping("/chat/{id}/messages")
-    public Set<MessageDTO> getChatMessages(@PathVariable("id") long id)
+    public Page<MessageDTO> getChatMessages(@PathVariable("id") long id, Pageable pageable)
             throws ChatRoomNotFoundException, UserNotFoundException {
-        return chatRoomService.getChatMessages(id);
+        return chatRoomService.getChatMessages(id,pageable);
     }
 
     @GetMapping("/chat/{id}/users")
-    public Set<UserDTO> getUsersInChat(@PathVariable("id") long id)
+    public Page<UserDTO> getUsersInChat(@PathVariable("id") long id, Pageable pageable)
             throws ChatRoomNotFoundException, UserNotFoundException {
-        return chatRoomService.getUsersInChat(id);
+        return chatRoomService.getUsersInChat(id,pageable);
     }
 
     @PostMapping("/chat")
     @ResponseStatus(HttpStatus.CREATED)
-    public long createChatRoom(@Validated ChatRoomDTO chatRoomDTO) throws UserNotFoundException {
-        return chatRoomService.createChatRoom(chatRoomDTO);
+    public long createChatRoom(@Validated ChatRoomCreateDTO chatRoomCreateDTO) throws UserNotFoundException {
+        return chatRoomService.createChatRoom(chatRoomCreateDTO);
     }
 
     @PostMapping("/chat/{chatId}/add/{userId}")
