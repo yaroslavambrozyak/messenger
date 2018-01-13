@@ -27,21 +27,21 @@ public interface UserService {
 
     void createUser(RegistrationDTO registrationDTO);
 
-    void updateUser(UserUpdateDTO user, long id);
+    void updateUser(UserUpdateDTO user);
 
-    void deleteUser(long id);
+    void deleteUser();
 
     long getUserIdByName(String name);
 
-    Page<ChatRoomDTO> getUserChats(long id, Pageable pageable);
+    Page<ChatRoomDTO> getUserChats(Pageable pageable);
 
-    void addFriend(long id, long friendId);
+    void addFriend(long friendId);
 
-    void deleteFriend(long id, long friendId);
+    void deleteFriend(long friendId);
 
     Page<UserDTO> getUserFriends(long id, Pageable pageable);
 
-    Page<UserDTO> getUserFriendRequest(long id, Pageable pageable);
+    Page<UserDTO> getUserFriendRequest(Pageable pageable);
 
-    void friendRequest(long id, long friendId);
+    void friendRequest(long friendId);
 }

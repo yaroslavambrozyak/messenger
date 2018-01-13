@@ -66,21 +66,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserUpdateDTO user, long id) {
-        User userToUpdate = getUserEntity(id);
-        if (userToUpdate.getId() == getCurrentUserEntity().getId()) {
-            NullAwareBeanUtil.copyProperties(user, userToUpdate);
-            userToUpdate.setId(id);
-            userRepository.save(userToUpdate);
-        }
+    public void updateUser(UserUpdateDTO user) {
+        User userToUpdate = getCurrentUserEntity();
+        NullAwareBeanUtil.copyProperties(user, userToUpdate);
+        userRepository.save(userToUpdate);
     }
 
     @Override
-    public void deleteUser(long id) {
-        User userToDelete = getUserEntity(id);
+    public void deleteUser() {
         User currentUser = getCurrentUserEntity();
-        if (userToDelete.getId() == currentUser.getId())
-            userRepository.delete(id);
+        userRepository.delete(currentUser);
     }
 
     @Override
@@ -89,32 +84,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<ChatRoomDTO> getUserChats(long id, Pageable pageable) {
-        return userRepository.getChatRoom(id, pageable)
+    public Page<ChatRoomDTO> getUserChats(Pageable pageable) {
+        return userRepository.getChatRoom(getCurrentUserEntity().getId(), pageable)
                 .map(chatRoom -> modelMapper.map(chatRoom, ChatRoomDTO.class));
 
     }
 
     @Override
-    public void addFriend(long id, long friendId) {
+    public void addFriend(long friendId) {
         User user = getCurrentUserEntity();
-        if (user.getId() == id) {
-            User friend = getUserEntity(friendId);
-            if (user.getFriendsReq().contains(friend)) {
-                user.getFriends().add(friend);
-                userRepository.save(user);
-            }
+        User friend = getUserEntity(friendId);
+        if (user.getFriendsReq().contains(friend)) {
+            user.getFriends().add(friend);
+            user.getFriendsReq().remove(friend);
+            userRepository.save(user);
         }
     }
 
     @Override
-    public void deleteFriend(long id, long friendId) {
+    public void deleteFriend(long friendId) {
         User user = getCurrentUserEntity();
-        if (user.getId() == id) {
-            User friend = getUserEntity(friendId);
-            user.getFriends().remove(friend);
-            userRepository.save(user);
-        }
+        User friend = getUserEntity(friendId);
+        user.getFriends().remove(friend);
+        userRepository.save(user);
     }
 
     @Override
@@ -124,13 +116,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserDTO> getUserFriendRequest(long id, Pageable pageable) {
-        return userRepository.getUserFriendRequest(id, pageable)
+    public Page<UserDTO> getUserFriendRequest(Pageable pageable) {
+        return userRepository.getUserFriendRequest(getCurrentUserEntity().getId(), pageable)
                 .map(user -> modelMapper.map(user, UserDTO.class));
     }
 
     @Override
-    public void friendRequest(long id, long friendId) {
+    public void friendRequest(long friendId) {
         User user = getUserEntity(friendId);
         User current = getCurrentUserEntity();
         user.getFriendsReq().add(current);

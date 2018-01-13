@@ -26,48 +26,49 @@ public class UserController {
         return userService.getCurrentUser();
     }
 
+    @GetMapping("/user/chats")
+    public Page<ChatRoomDTO> getUserChats(Pageable pageable) {
+        return userService.getUserChats(pageable);
+    }
+
+    @PutMapping("/user")
+    public void updateUser(UserUpdateDTO user) {
+        userService.updateUser(user);
+    }
+
+    @DeleteMapping("/user")
+    public void deleteUser() {
+        userService.deleteUser();
+    }
+
+
+    @GetMapping("/user/friend.request")
+    public Page<UserDTO> getUserFriendRequest(Pageable pageable){
+        return userService.getUserFriendRequest(pageable);
+    }
+
+    @PostMapping("/user/friend.request/{friendId}")
+    public void friendRequest(@PathVariable("friendId") long friendId){
+        userService.friendRequest(friendId);
+    }
+
+    @PostMapping("/user/add/{friendId}")
+    public void addToFriends(@PathVariable("friendId") long friendId) {
+        userService.addFriend(friendId);
+    }
+
+    @DeleteMapping("/user/delete/{friendId}")
+    public void deleteFromFriends(@PathVariable("friendId") long friendId){
+        userService.deleteFriend(friendId);
+    }
+
     @GetMapping("/user/{id}")
     public UserDTO getUser(@PathVariable("id") long id) {
         return userService.getUserById(id);
     }
 
-    @GetMapping("/user/{id}/chats")
-    public Page<ChatRoomDTO> getUserChats(@PathVariable("id") long id, Pageable pageable) {
-        return userService.getUserChats(id, pageable);
-    }
-
-    @PutMapping("/user/{id}")
-    public void updateUser(@PathVariable("id") long id, UserUpdateDTO user) {
-        userService.updateUser(user, id);
-    }
-
-    @DeleteMapping("/user/{id}")
-    public void deleteUser(@PathVariable("id") long id) {
-        userService.deleteUser(id);
-    }
-
-    @PostMapping("/user/{id}/add/{friendId}")
-    public void addToFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
-        userService.addFriend(id,friendId);
-    }
-
-    @DeleteMapping("/user/{id}/delete/{friendId}")
-    public void deleteFromFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId){
-        userService.deleteFriend(id,friendId);
-    }
-
     @GetMapping("/user/{id}/friends")
     public Page<UserDTO> getUserFriends(@PathVariable("id") long id, Pageable pageable){
         return userService.getUserFriends(id, pageable);
-    }
-
-    @GetMapping("/user/{id}/friend.request")
-    public Page<UserDTO> getUserFriendRequest(@PathVariable("id") long id, Pageable pageable){
-        return userService.getUserFriendRequest(id,pageable);
-    }
-
-    @PostMapping("/user/{id}/friend.request/{friendId}")
-    public void friendRequest(@PathVariable("id") long id, @PathVariable("friendId") long friendId){
-        userService.friendRequest(id,friendId);
     }
 }
