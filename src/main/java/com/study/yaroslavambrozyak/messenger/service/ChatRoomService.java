@@ -15,10 +15,17 @@ import java.util.Set;
 
 public interface ChatRoomService {
 
-    ChatRoomDTO getChatRoom(long id) throws ChatRoomNotFoundException, UserNotFoundException;
-    long createChatRoom(ChatRoomCreateDTO chatRoomCreateDTO) throws UserNotFoundException;
-    void addUserToChat(long chatRoomId, long userId) throws UserNotFoundException, ChatRoomNotFoundException;
-    Page<MessageDTO> getChatMessages(long id, Pageable pageable) throws ChatRoomNotFoundException, UserNotFoundException;
-    Page<UserDTO> getUsersInChat(long id, Pageable pageable) throws ChatRoomNotFoundException, UserNotFoundException;
-    ChatRoom getChatRoomEntity(long id) throws ChatRoomNotFoundException, UserNotFoundException;
+    ChatRoomDTO getChatRoom(long id);
+
+    long createChatRoom(ChatRoomCreateDTO chatRoomCreateDTO);
+
+    void addUserToChat(long chatRoomId, long userId);
+
+    Page<MessageDTO> getChatMessages(long id, Pageable pageable);
+
+    Page<UserDTO> getUsersInChat(long id, Pageable pageable);
+
+    ChatRoom getChatRoomEntity(long id);
+
+    void deleteUserFromChat(long chatRoomId, long userId);
 }

@@ -10,11 +10,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional(readOnly = true)
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     User findByName(String name);
+
     User findByEmail(String email);
+
     @Query(value = "SELECT u.id FROM User u WHERE u.email=?1")
     Long getUserId(String email);
+
     @Query("SELECT c FROM ChatRoom c JOIN c.usersInRoom u WHERE u.id=?1")
     Page<ChatRoom> getChatRoom(long id, Pageable pageable);
+
+    @Query("SELECT u FROM User u JOIN u.befriended uf WHERE uf.id=?1 OR u.id=?1")
+    Page<User> getUserFriends(long id, Pageable pageable);
+
+    @Query("SELECT u FROM User u JOIN u.befriendedReq ureq WHERE ureq.id=?1")
+    Page<User> getUserFriendRequest(long id, Pageable pageable);
 }

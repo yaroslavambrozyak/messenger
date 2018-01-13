@@ -1,6 +1,6 @@
 package com.study.yaroslavambrozyak.messenger.exception;
 
-public class ChatRoomNotFoundException extends Exception{
+public class ChatRoomNotFoundException extends RuntimeException{
 
     public ChatRoomNotFoundException() {
     }

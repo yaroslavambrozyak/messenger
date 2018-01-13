@@ -29,32 +29,33 @@ public class ChatRoomController {
     private ChatRoomService chatRoomService;
 
     @GetMapping("/chat/{id}")
-    public ChatRoomDTO getChatRoom(@PathVariable("id") long id)
-            throws ChatRoomNotFoundException, UserNotFoundException {
+    public ChatRoomDTO getChatRoom(@PathVariable("id") long id){
         return chatRoomService.getChatRoom(id);
     }
 
     @GetMapping("/chat/{id}/messages")
-    public Page<MessageDTO> getChatMessages(@PathVariable("id") long id, Pageable pageable)
-            throws ChatRoomNotFoundException, UserNotFoundException {
+    public Page<MessageDTO> getChatMessages(@PathVariable("id") long id, Pageable pageable){
         return chatRoomService.getChatMessages(id,pageable);
     }
 
     @GetMapping("/chat/{id}/users")
-    public Page<UserDTO> getUsersInChat(@PathVariable("id") long id, Pageable pageable)
-            throws ChatRoomNotFoundException, UserNotFoundException {
+    public Page<UserDTO> getUsersInChat(@PathVariable("id") long id, Pageable pageable){
         return chatRoomService.getUsersInChat(id,pageable);
     }
 
     @PostMapping("/chat")
     @ResponseStatus(HttpStatus.CREATED)
-    public long createChatRoom(@Validated ChatRoomCreateDTO chatRoomCreateDTO) throws UserNotFoundException {
+    public long createChatRoom(@Validated ChatRoomCreateDTO chatRoomCreateDTO){
         return chatRoomService.createChatRoom(chatRoomCreateDTO);
     }
 
     @PostMapping("/chat/{chatId}/add/{userId}")
-    public void addUserToChat(@PathVariable("chatId") long chatId, @PathVariable("userId") long userId)
-            throws UserNotFoundException, ChatRoomNotFoundException {
+    public void addUserToChat(@PathVariable("chatId") long chatId, @PathVariable("userId") long userId) {
         chatRoomService.addUserToChat(chatId, userId);
+    }
+
+    @DeleteMapping("/chat/{chatId}/delete/{userId}")
+    public void deleteUserFromChat(@PathVariable("chatId") long chatId, @PathVariable("userId") long userId){
+        chatRoomService.deleteUserFromChat(chatId,userId);
     }
 }

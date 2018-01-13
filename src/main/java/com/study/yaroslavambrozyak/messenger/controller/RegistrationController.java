@@ -23,7 +23,7 @@ public class RegistrationController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registration(@Validated RegistrationDTO registrationDTO) throws UserAlreadyExists {
+    public void registration(@Validated RegistrationDTO registrationDTO){
         userService.createUser(registrationDTO);
     }
 

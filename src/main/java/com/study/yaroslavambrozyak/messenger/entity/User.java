@@ -26,6 +26,20 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
+    @ManyToMany
+    @JoinTable(name = "user_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_s_id"))
+    private Set<User> friends = new HashSet<>();
+    @ManyToMany(mappedBy = "friends")
+    private Set<User> befriended = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name = "user_friends_req",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id"))
+    private Set<User> friendsReq = new HashSet<>();
+    @ManyToMany(mappedBy = "friends")
+    private Set<User> befriendedReq = new HashSet<>();
 
     public long getId() {
         return id;
@@ -75,4 +89,43 @@ public class User {
         this.email = email;
     }
 
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
+    }
+
+    public Set<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<User> friends) {
+        this.friends = friends;
+    }
+
+    public Set<User> getBefriended() {
+        return befriended;
+    }
+
+    public void setBefriended(Set<User> befriended) {
+        this.befriended = befriended;
+    }
+
+    public Set<User> getFriendsReq() {
+        return friendsReq;
+    }
+
+    public void setFriendsReq(Set<User> friendsReq) {
+        this.friendsReq = friendsReq;
+    }
+
+    public Set<User> getBefriendedReq() {
+        return befriendedReq;
+    }
+
+    public void setBefriendedReq(Set<User> befriendedReq) {
+        this.befriendedReq = befriendedReq;
+    }
 }

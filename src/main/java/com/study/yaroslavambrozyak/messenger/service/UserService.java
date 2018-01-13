@@ -15,21 +15,33 @@ import java.util.Set;
 
 public interface UserService {
 
-    User getUserEntity(Long id) throws UserNotFoundException;
+    User getUserEntity(long id);
 
-    User getCurrentUser();
+    User getCurrentUserEntity();
 
-    UserDTO getUserById(Long id) throws UserNotFoundException;
+    UserDTO getCurrentUser();
 
-    UserDTO getUserByUserName(String userName) throws UserNotFoundException;
+    UserDTO getUserById(long id);
 
-    void createUser(RegistrationDTO registrationDTO) throws UserAlreadyExists;
+    UserDTO getUserByUserName(String userName);
 
-    void updateUser(UserUpdateDTO user, long id) throws UserNotFoundException;
+    void createUser(RegistrationDTO registrationDTO);
 
-    void deleteUser(Long id) throws UserNotFoundException;
+    void updateUser(UserUpdateDTO user, long id);
 
-    Long getUserIdByName(String name);
+    void deleteUser(long id);
 
-    Page<ChatRoomDTO> getUserChats(Long id, Pageable pageable) throws UserNotFoundException;
+    long getUserIdByName(String name);
+
+    Page<ChatRoomDTO> getUserChats(long id, Pageable pageable);
+
+    void addFriend(long id, long friendId);
+
+    void deleteFriend(long id, long friendId);
+
+    Page<UserDTO> getUserFriends(long id, Pageable pageable);
+
+    Page<UserDTO> getUserFriendRequest(long id, Pageable pageable);
+
+    void friendRequest(long id, long friendId);
 }

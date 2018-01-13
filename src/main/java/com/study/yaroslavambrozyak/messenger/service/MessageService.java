@@ -6,6 +6,6 @@ import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 
 public interface MessageService {
 
-    void saveMessage(MessageDTO messageDTO,long chatId) throws UserNotFoundException, ChatRoomNotFoundException;
+    void saveMessage(MessageDTO messageDTO,long chatId);
 
 }

@@ -1,6 +1,5 @@
 package com.study.yaroslavambrozyak.messenger.controller;
 
-import com.study.yaroslavambrozyak.messenger.entity.ChatRoom;
 import com.study.yaroslavambrozyak.messenger.exception.ChatRoomNotFoundException;
 import com.study.yaroslavambrozyak.messenger.exception.UserAlreadyExists;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;

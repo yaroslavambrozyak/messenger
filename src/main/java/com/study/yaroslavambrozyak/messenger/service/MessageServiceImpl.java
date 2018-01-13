@@ -30,7 +30,7 @@ public class MessageServiceImpl implements MessageService {
     private ModelMapper modelMapper;
 
     @Override
-    public void saveMessage(MessageDTO messageDTO, long chatId) throws UserNotFoundException, ChatRoomNotFoundException {
+    public void saveMessage(MessageDTO messageDTO, long chatId){
         ChatRoom chatRoom = chatRoomService.getChatRoomEntity(chatId);
         Message message = modelMapper.map(messageDTO, Message.class);
         User user = userService.getUserEntity(messageDTO.getUserId());
