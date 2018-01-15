@@ -18,26 +18,21 @@ import java.util.Collections;
 
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
-    private UserService userService;
 
-    public JWTLoginFilter(String url, AuthenticationManager authManager, UserService userService) {
+    public JWTLoginFilter(String url, AuthenticationManager authManager) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authManager);
-        this.userService = userService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
             throws AuthenticationException, IOException, ServletException {
-        String userName = req.getParameter("email");
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                userName,
+                req.getParameter("email"),
                 req.getParameter("password"),
                 Collections.emptyList()
         );
-        Authentication authentication = getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
-        if (authentication.isAuthenticated()) res.addHeader("id", String.valueOf(userService.getUserIdByName(userName)));
-        return authentication;
+        return getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
     }
 
     @Override

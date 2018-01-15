@@ -5,6 +5,7 @@ import com.study.yaroslavambrozyak.messenger.dto.RegistrationDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserUpdateDTO;
 import com.study.yaroslavambrozyak.messenger.entity.User;
+import com.study.yaroslavambrozyak.messenger.exception.SameUserException;
 import com.study.yaroslavambrozyak.messenger.exception.UserAlreadyExists;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.repository.UserRepository;
@@ -116,6 +117,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<UserDTO> getUserFriends(Pageable pageable) {
+        return getUserFriends(getCurrentUserEntity().getId(), pageable);
+    }
+
+    @Override
     public Page<UserDTO> getUserFriendRequest(Pageable pageable) {
         return userRepository.getUserFriendRequest(getCurrentUserEntity().getId(), pageable)
                 .map(user -> modelMapper.map(user, UserDTO.class));
@@ -123,8 +129,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void friendRequest(long friendId) {
-        User user = getUserEntity(friendId);
         User current = getCurrentUserEntity();
+        if (friendId == current.getId())
+            throw new SameUserException("Self request");
+        User user = getUserEntity(friendId);
         user.getFriendsReq().add(current);
         userRepository.save(user);
     }

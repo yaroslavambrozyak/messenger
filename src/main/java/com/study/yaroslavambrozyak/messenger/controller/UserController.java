@@ -41,7 +41,6 @@ public class UserController {
         userService.deleteUser();
     }
 
-
     @GetMapping("/user/friend.request")
     public Page<UserDTO> getUserFriendRequest(Pageable pageable){
         return userService.getUserFriendRequest(pageable);
@@ -60,6 +59,11 @@ public class UserController {
     @DeleteMapping("/user/delete/{friendId}")
     public void deleteFromFriends(@PathVariable("friendId") long friendId){
         userService.deleteFriend(friendId);
+    }
+
+    @GetMapping("/user/friends")
+    public Page<UserDTO> getUserFriends(Pageable pageable){
+        return userService.getUserFriends(pageable);
     }
 
     @GetMapping("/user/{id}")

@@ -44,4 +44,14 @@ public class TokenAuthenticationService {
         return null;
     }
 
+    public static String createToken(String username) {
+        String jwt = Jwts.builder()
+                .setSubject(username)
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .compact();
+
+        return TOKEN_PREFIX + " " + jwt;
+    }
+
 }

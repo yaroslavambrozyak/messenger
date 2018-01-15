@@ -38,7 +38,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id"))
     private Set<User> friendsReq = new HashSet<>();
-    @ManyToMany(mappedBy = "friends")
+    @ManyToMany(mappedBy = "friendsReq")
     private Set<User> befriendedReq = new HashSet<>();
 
     public long getId() {

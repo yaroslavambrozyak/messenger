@@ -41,6 +41,8 @@ public interface UserService {
 
     Page<UserDTO> getUserFriends(long id, Pageable pageable);
 
+    Page<UserDTO> getUserFriends(Pageable pageable);
+
     Page<UserDTO> getUserFriendRequest(Pageable pageable);
 
     void friendRequest(long friendId);
