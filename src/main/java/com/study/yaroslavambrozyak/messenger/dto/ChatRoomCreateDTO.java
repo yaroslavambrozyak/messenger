@@ -7,6 +7,13 @@ public class ChatRoomCreateDTO {
     @NotBlank
     private String name;
 
+    public ChatRoomCreateDTO() {
+    }
+
+    public ChatRoomCreateDTO(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

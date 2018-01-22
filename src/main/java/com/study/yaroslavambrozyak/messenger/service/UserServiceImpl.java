@@ -75,8 +75,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser() {
-        User currentUser = getCurrentUserEntity();
-        userRepository.delete(currentUser);
+        userRepository.delete(getCurrentUserEntity());
     }
 
     @Override
@@ -88,26 +87,36 @@ public class UserServiceImpl implements UserService {
     public Page<ChatRoomDTO> getUserChats(Pageable pageable) {
         return userRepository.getChatRoom(getCurrentUserEntity().getId(), pageable)
                 .map(chatRoom -> modelMapper.map(chatRoom, ChatRoomDTO.class));
-
     }
 
     @Override
     public void addFriend(long friendId) {
         User user = getCurrentUserEntity();
-        User friend = getUserEntity(friendId);
-        if (user.getFriendsReq().contains(friend)) {
+        boolean isContains = user.getFriendsReq()
+                .parallelStream()
+                .anyMatch(friendReq -> friendReq.getId() == friendId);
+        if (isContains) {
+            User friend = getUserEntity(friendId);
             user.getFriends().add(friend);
             user.getFriendsReq().remove(friend);
             userRepository.save(user);
+        } else {
+            throw new UserNotFoundException("Cant find user with id: " + friendId);
         }
     }
 
     @Override
     public void deleteFriend(long friendId) {
         User user = getCurrentUserEntity();
-        User friend = getUserEntity(friendId);
-        user.getFriends().remove(friend);
-        userRepository.save(user);
+        boolean isFriendContains = user.getFriends()
+                .parallelStream()
+                .anyMatch(friend -> friend.getId() == friendId);
+        if (isFriendContains) {
+            user.getFriends().remove(getUserEntity(friendId));
+            userRepository.save(user);
+        } else {
+            throw new UserNotFoundException("Cant find user with id: " + friendId);
+        }
     }
 
     @Override

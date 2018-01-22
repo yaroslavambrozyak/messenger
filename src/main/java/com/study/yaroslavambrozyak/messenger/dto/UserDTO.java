@@ -6,6 +6,15 @@ public class UserDTO {
     private String name;
     private String surName;
 
+    public UserDTO() {
+    }
+
+    public UserDTO(long id, String name, String surName) {
+        this.id = id;
+        this.name = name;
+        this.surName = surName;
+    }
+
     public long getId() {
         return id;
     }

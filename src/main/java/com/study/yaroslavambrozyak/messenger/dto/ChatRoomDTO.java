@@ -5,6 +5,14 @@ public class ChatRoomDTO {
     private long id;
     private String name;
 
+    public ChatRoomDTO() {
+    }
+
+    public ChatRoomDTO(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public long getId() {
         return id;
     }
