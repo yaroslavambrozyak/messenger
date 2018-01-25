@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertThat;
@@ -34,10 +35,12 @@ public class UserServiceTest {
     private UserRepository userRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private MessageSource messageSource;
 
     @Before
     public void init() {
-        userService = new UserServiceImpl(userRepository, modelMapper);
+        userService = new UserServiceImpl(userRepository, modelMapper,messageSource);
     }
 
     //TODO try user eq!

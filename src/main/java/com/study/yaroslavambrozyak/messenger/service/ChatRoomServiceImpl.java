@@ -12,6 +12,7 @@ import com.study.yaroslavambrozyak.messenger.repository.ChatRoomRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,10 +38,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public ChatRoom getChatRoomEntity(long id) {
         ChatRoom chatRoom = Optional.ofNullable(chatRoomRepository.findOne(id))
                 .orElseThrow(() -> new ChatRoomNotFoundException(messageSource.getMessage("exception.chat-room.not-found-by-id",
-                        new Object[]{id}, null)));
+                        new Object[]{id}, LocaleContextHolder.getLocale())));
         if (!checkIsUserExist(chatRoom))
             throw new UserNotFoundException(messageSource.getMessage("exception.chat-room.current-user-not-found",
-                    null, null));
+                    null, LocaleContextHolder.getLocale()));
         return chatRoom;
     }
 

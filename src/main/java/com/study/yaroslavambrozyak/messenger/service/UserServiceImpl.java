@@ -13,6 +13,7 @@ import com.study.yaroslavambrozyak.messenger.util.NullAwareBeanUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,7 +42,7 @@ public class UserServiceImpl implements UserService {
         return Optional.ofNullable(userRepository.findOne(id))
                 .orElseThrow(() -> new UserNotFoundException(
                         messageSource.getMessage("exception.user.not-found-by-id",
-                                new Object[]{id},null)));
+                                new Object[]{id}, LocaleContextHolder.getLocale())));
     }
 
     @Override
@@ -49,7 +50,8 @@ public class UserServiceImpl implements UserService {
         return Optional.ofNullable(
                 userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()))
                 .orElseThrow(() -> new UserNotFoundException(
-                        messageSource.getMessage("exception.current-user.not-found",null,null)));
+                        messageSource.getMessage("exception.current-user.not-found",null,
+                                LocaleContextHolder.getLocale())));
     }
 
     @Override
@@ -67,7 +69,7 @@ public class UserServiceImpl implements UserService {
         User user = Optional.ofNullable(userRepository.findByName(userName))
                 .orElseThrow(() -> new UserNotFoundException(
                         messageSource.getMessage("exception.user.not-found-by-name",
-                                new Object[]{userName},null)));
+                                new Object[]{userName},LocaleContextHolder.getLocale())));
         return modelMapper.map(user, UserDTO.class);
     }
 
@@ -75,7 +77,7 @@ public class UserServiceImpl implements UserService {
     public void createUser(RegistrationDTO registrationDTO) {
         Optional<User> user = Optional.ofNullable(userRepository.findByEmail(registrationDTO.getEmail()));
         if (user.isPresent()) throw new UserAlreadyExists(messageSource.getMessage("exception.user.already-exist",
-                new Object[]{registrationDTO.getEmail()},null));
+                new Object[]{registrationDTO.getEmail()},LocaleContextHolder.getLocale()));
         userRepository.save(modelMapper.map(registrationDTO, User.class));
     }
 
@@ -117,7 +119,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
         } else {
             throw new UserNotFoundException(messageSource.getMessage("exception.user.friend-req.not-found",
-                    new Object[]{friendId},null));
+                    new Object[]{friendId},LocaleContextHolder.getLocale()));
         }
     }
 
@@ -132,7 +134,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
         } else {
             throw new UserNotFoundException(messageSource.getMessage("exception.user.friend.not-found",
-                    new Object[]{friendId},null));
+                    new Object[]{friendId},LocaleContextHolder.getLocale()));
         }
     }
 
@@ -159,7 +161,7 @@ public class UserServiceImpl implements UserService {
         boolean isNotExist = current.getFriends().stream().noneMatch(friend->friend.getId()==friendId);
         if (friendId == current.getId() && isNotExist)
             throw new SameUserException(messageSource.getMessage("exception.user.self-friend-req"
-                    ,null,null));
+                    ,null,LocaleContextHolder.getLocale()));
         User user = getUserEntity(friendId);
         user.getFriendsReq().add(current);
         userRepository.save(user);
