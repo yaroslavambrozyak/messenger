@@ -1,6 +1,5 @@
-package com.study.yaroslavambrozyak.messenger.controllerTest;
+package com.study.yaroslavambrozyak.messenger.controllertest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.yaroslavambrozyak.messenger.TestUtil;
 import com.study.yaroslavambrozyak.messenger.controller.ExceptionController;
 import com.study.yaroslavambrozyak.messenger.controller.UserController;
@@ -22,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -59,7 +57,6 @@ public class UserControllerTest {
                 .setControllerAdvice(exceptionController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .build();
-
     }
 
     @Test

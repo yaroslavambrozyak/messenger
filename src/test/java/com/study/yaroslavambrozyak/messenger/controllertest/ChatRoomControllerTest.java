@@ -1,4 +1,4 @@
-package com.study.yaroslavambrozyak.messenger.controllerTest;
+package com.study.yaroslavambrozyak.messenger.controllertest;
 
 import com.study.yaroslavambrozyak.messenger.TestUtil;
 import com.study.yaroslavambrozyak.messenger.controller.ChatRoomController;

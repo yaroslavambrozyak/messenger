@@ -12,33 +12,44 @@ import com.study.yaroslavambrozyak.messenger.repository.UserRepository;
 import com.study.yaroslavambrozyak.messenger.util.NullAwareBeanUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserRepository userRepository;
+    private ModelMapper modelMapper;
+    private MessageSource messageSource;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, MessageSource messageSource) {
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+        this.messageSource = messageSource;
+    }
 
     @Override
     public User getUserEntity(long id) {
         return Optional.ofNullable(userRepository.findOne(id))
-                .orElseThrow(() -> new UserNotFoundException("Cant find user with id: " + id));
+                .orElseThrow(() -> new UserNotFoundException(
+                        messageSource.getMessage("exception.user.not-found-by-id",
+                                new Object[]{id},null)));
     }
 
     @Override
     public User getCurrentUserEntity() {
         return Optional.ofNullable(
                 userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()))
-                .orElseThrow(() -> new UserNotFoundException("Cant find user"));
+                .orElseThrow(() -> new UserNotFoundException(
+                        messageSource.getMessage("exception.current-user.not-found",null,null)));
     }
 
     @Override
@@ -54,15 +65,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUserByUserName(String userName) {
         User user = Optional.ofNullable(userRepository.findByName(userName))
-                .orElseThrow(() -> new UserNotFoundException("Cant find user with name: " + userName));
+                .orElseThrow(() -> new UserNotFoundException(
+                        messageSource.getMessage("exception.user.not-found-by-name",
+                                new Object[]{userName},null)));
         return modelMapper.map(user, UserDTO.class);
     }
 
     @Override
     public void createUser(RegistrationDTO registrationDTO) {
         Optional<User> user = Optional.ofNullable(userRepository.findByEmail(registrationDTO.getEmail()));
-        if (user.isPresent()) throw new UserAlreadyExists("User with email "
-                + registrationDTO.getEmail() + " already exist");
+        if (user.isPresent()) throw new UserAlreadyExists(messageSource.getMessage("exception.user.already-exist",
+                new Object[]{registrationDTO.getEmail()},null));
         userRepository.save(modelMapper.map(registrationDTO, User.class));
     }
 
@@ -89,6 +102,7 @@ public class UserServiceImpl implements UserService {
                 .map(chatRoom -> modelMapper.map(chatRoom, ChatRoomDTO.class));
     }
 
+
     @Override
     public void addFriend(long friendId) {
         User user = getCurrentUserEntity();
@@ -99,9 +113,11 @@ public class UserServiceImpl implements UserService {
             User friend = getUserEntity(friendId);
             user.getFriends().add(friend);
             user.getFriendsReq().remove(friend);
+            friend.getFriends().add(user);
             userRepository.save(user);
         } else {
-            throw new UserNotFoundException("Cant find user with id: " + friendId);
+            throw new UserNotFoundException(messageSource.getMessage("exception.user.friend-req.not-found",
+                    new Object[]{friendId},null));
         }
     }
 
@@ -115,7 +131,8 @@ public class UserServiceImpl implements UserService {
             user.getFriends().remove(getUserEntity(friendId));
             userRepository.save(user);
         } else {
-            throw new UserNotFoundException("Cant find user with id: " + friendId);
+            throw new UserNotFoundException(messageSource.getMessage("exception.user.friend.not-found",
+                    new Object[]{friendId},null));
         }
     }
 
@@ -139,8 +156,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void friendRequest(long friendId) {
         User current = getCurrentUserEntity();
-        if (friendId == current.getId())
-            throw new SameUserException("Self request");
+        boolean isNotExist = current.getFriends().stream().noneMatch(friend->friend.getId()==friendId);
+        if (friendId == current.getId() && isNotExist)
+            throw new SameUserException(messageSource.getMessage("exception.user.self-friend-req"
+                    ,null,null));
         User user = getUserEntity(friendId);
         user.getFriendsReq().add(current);
         userRepository.save(user);

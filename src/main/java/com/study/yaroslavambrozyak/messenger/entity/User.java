@@ -1,16 +1,20 @@
 package com.study.yaroslavambrozyak.messenger.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.NotFound;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "user_acc")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(of = "email")
 public class User {
 
     @Id
@@ -40,92 +44,4 @@ public class User {
     private Set<User> friendsReq = new HashSet<>();
     @ManyToMany(mappedBy = "friendsReq")
     private Set<User> befriendedReq = new HashSet<>();
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurName() {
-        return surName;
-    }
-
-    public void setSurName(String surName) {
-        this.surName = surName;
-    }
-
-    public Set<ChatRoom> getUserChatRooms() {
-        return userChatRooms;
-    }
-
-    public void setUserChatRooms(Set<ChatRoom> userChatRooms) {
-        this.userChatRooms = userChatRooms;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Set<Message> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(Set<Message> messages) {
-        this.messages = messages;
-    }
-
-    public Set<User> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(Set<User> friends) {
-        this.friends = friends;
-    }
-
-    public Set<User> getBefriended() {
-        return befriended;
-    }
-
-    public void setBefriended(Set<User> befriended) {
-        this.befriended = befriended;
-    }
-
-    public Set<User> getFriendsReq() {
-        return friendsReq;
-    }
-
-    public void setFriendsReq(Set<User> friendsReq) {
-        this.friendsReq = friendsReq;
-    }
-
-    public Set<User> getBefriendedReq() {
-        return befriendedReq;
-    }
-
-    public void setBefriendedReq(Set<User> befriendedReq) {
-        this.befriendedReq = befriendedReq;
-    }
 }

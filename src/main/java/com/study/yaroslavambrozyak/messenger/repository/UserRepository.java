@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT c FROM ChatRoom c JOIN c.usersInRoom u WHERE u.id=?1")
     Page<ChatRoom> getChatRoom(long id, Pageable pageable);
 
-    @Query("SELECT u FROM User u JOIN u.befriended uf WHERE uf.id=?1 OR u.id=?1")
+    @Query("SELECT u FROM User u JOIN u.befriended uf WHERE uf.id=?1")
     Page<User> getUserFriends(long id, Pageable pageable);
 
     @Query("SELECT u FROM User u JOIN u.befriendedReq ureq WHERE ureq.id=?1")

@@ -1,10 +1,17 @@
 package com.study.yaroslavambrozyak.messenger.entity;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class ChatRoom {
 
     @Id
@@ -20,36 +27,4 @@ public class ChatRoom {
     private Set<User> usersInRoom = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chatRoom")
     private Set<Message> messages = new HashSet<>();
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<User> getUsersInRoom() {
-        return usersInRoom;
-    }
-
-    public void setUsersInRoom(Set<User> usersInRoom) {
-        this.usersInRoom = usersInRoom;
-    }
-
-    public Set<Message> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(Set<Message> messages) {
-        this.messages = messages;
-    }
 }

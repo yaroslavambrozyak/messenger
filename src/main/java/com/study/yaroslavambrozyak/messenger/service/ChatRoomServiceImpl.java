@@ -11,6 +11,7 @@ import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.repository.ChatRoomRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private UserService userService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
     public ChatRoom getChatRoomEntity(long id) {
         ChatRoom chatRoom = Optional.ofNullable(chatRoomRepository.findOne(id))
-                .orElseThrow(() -> new ChatRoomNotFoundException("Cant find chat with id: " + id));
+                .orElseThrow(() -> new ChatRoomNotFoundException(messageSource.getMessage("exception.chat-room.not-found-by-id",
+                        new Object[]{id}, null)));
         if (!checkIsUserExist(chatRoom))
-            throw new UserNotFoundException("User not in room");
+            throw new UserNotFoundException(messageSource.getMessage("exception.chat-room.current-user-not-found",
+                    null, null));
         return chatRoom;
     }
 
