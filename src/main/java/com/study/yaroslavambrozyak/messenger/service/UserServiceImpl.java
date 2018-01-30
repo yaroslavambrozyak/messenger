@@ -195,14 +195,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Resource loadPicture(long id) {
+    public Resource loadPicture(long id) throws IOException {
         String imagePath = getCurrentUserEntity().getImagePath();
         Path path = Paths.get(UPLOADED_FOLDER + imagePath);
-        try {
-            return new ByteArrayResource(Files.readAllBytes(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return new ByteArrayResource(Files.readAllBytes(path));
     }
 }

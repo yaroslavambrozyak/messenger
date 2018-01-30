@@ -82,8 +82,8 @@ public class UserController {
         return userService.getUserFriends(id, pageable);
     }
 
-    @GetMapping(value = "/user/{id}/picture", produces = MediaType.IMAGE_JPEG_VALUE)
-    public Resource loadPicture(@PathVariable("id") long id){
+    @GetMapping(value = "/user/{id}/picture", produces = {MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE})
+    public Resource loadPicture(@PathVariable("id") long id) throws IOException {
         return userService.loadPicture(id);
     }
 

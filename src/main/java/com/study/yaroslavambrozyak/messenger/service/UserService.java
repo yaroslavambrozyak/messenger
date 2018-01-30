@@ -52,5 +52,5 @@ public interface UserService {
 
     void uploadPicture(MultipartFile multipartFile) throws IOException;
 
-    Resource loadPicture(long id);
+    Resource loadPicture(long id) throws IOException;
 }
