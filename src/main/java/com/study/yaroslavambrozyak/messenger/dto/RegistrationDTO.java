@@ -7,6 +7,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -21,6 +24,9 @@ public class RegistrationDTO {
     @Email
     private String email;
     @NotBlank
-    @Length(min=4)
+    @Length(min = 4)
     private String password;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date birthday;
+    private short gender;
 }

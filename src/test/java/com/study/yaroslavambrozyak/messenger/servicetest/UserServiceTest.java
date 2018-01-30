@@ -21,6 +21,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
+
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -91,7 +93,7 @@ public class UserServiceTest {
     @Test
     public void createUserSuccess() {
         RegistrationDTO testRegistrationDTO = new RegistrationDTO("name", "sur"
-                , "email", "1111");
+                , "email", "1111",new Date());
         User user = modelMapper.map(testRegistrationDTO, User.class);
 
         when(userRepository.save(user)).thenReturn(user);
@@ -105,7 +107,7 @@ public class UserServiceTest {
     @Test
     public void createUserAlreadyExist() {
         RegistrationDTO testRegistrationDTO = new RegistrationDTO("name", "sur"
-                , "email", "1111");
+                , "email", "1111", new Date());
 
         when(userRepository.findByEmail("email")).thenReturn(new User());
 

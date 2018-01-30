@@ -11,15 +11,24 @@ import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.repository.UserRepository;
 import com.study.yaroslavambrozyak.messenger.util.NullAwareBeanUtil;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -29,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private ModelMapper modelMapper;
     private MessageSource messageSource;
+
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, MessageSource messageSource) {
@@ -50,7 +60,7 @@ public class UserServiceImpl implements UserService {
         return Optional.ofNullable(
                 userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()))
                 .orElseThrow(() -> new UserNotFoundException(
-                        messageSource.getMessage("exception.current-user.not-found",null,
+                        messageSource.getMessage("exception.current-user.not-found", null,
                                 LocaleContextHolder.getLocale())));
     }
 
@@ -69,7 +79,7 @@ public class UserServiceImpl implements UserService {
         User user = Optional.ofNullable(userRepository.findByName(userName))
                 .orElseThrow(() -> new UserNotFoundException(
                         messageSource.getMessage("exception.user.not-found-by-name",
-                                new Object[]{userName},LocaleContextHolder.getLocale())));
+                                new Object[]{userName}, LocaleContextHolder.getLocale())));
         return modelMapper.map(user, UserDTO.class);
     }
 
@@ -77,7 +87,7 @@ public class UserServiceImpl implements UserService {
     public void createUser(RegistrationDTO registrationDTO) {
         Optional<User> user = Optional.ofNullable(userRepository.findByEmail(registrationDTO.getEmail()));
         if (user.isPresent()) throw new UserAlreadyExists(messageSource.getMessage("exception.user.already-exist",
-                new Object[]{registrationDTO.getEmail()},LocaleContextHolder.getLocale()));
+                new Object[]{registrationDTO.getEmail()}, LocaleContextHolder.getLocale()));
         userRepository.save(modelMapper.map(registrationDTO, User.class));
     }
 
@@ -119,7 +129,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
         } else {
             throw new UserNotFoundException(messageSource.getMessage("exception.user.friend-req.not-found",
-                    new Object[]{friendId},LocaleContextHolder.getLocale()));
+                    new Object[]{friendId}, LocaleContextHolder.getLocale()));
         }
     }
 
@@ -134,7 +144,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
         } else {
             throw new UserNotFoundException(messageSource.getMessage("exception.user.friend.not-found",
-                    new Object[]{friendId},LocaleContextHolder.getLocale()));
+                    new Object[]{friendId}, LocaleContextHolder.getLocale()));
         }
     }
 
@@ -158,12 +168,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public void friendRequest(long friendId) {
         User current = getCurrentUserEntity();
-        boolean isNotExist = current.getFriends().stream().noneMatch(friend->friend.getId()==friendId);
+        boolean isNotExist = current.getFriends().stream().noneMatch(friend -> friend.getId() == friendId);
         if (friendId == current.getId() && isNotExist)
             throw new SameUserException(messageSource.getMessage("exception.user.self-friend-req"
-                    ,null,LocaleContextHolder.getLocale()));
+                    , null, LocaleContextHolder.getLocale()));
         User user = getUserEntity(friendId);
         user.getFriendsReq().add(current);
         userRepository.save(user);
+    }
+
+    //??????????
+    private static String UPLOADED_FOLDER = "D://temp//";
+
+    @Override
+    public void uploadPicture(MultipartFile multipartFile) throws IOException {
+        if (multipartFile.isEmpty())
+            throw new RuntimeException();
+        User user = getCurrentUserEntity();
+        byte[] bytes = multipartFile.getBytes();
+        String type = multipartFile.getContentType().split("/")[1];
+        String imageName = "pic-" + user.getId() + "." + type;
+        Path path = Paths.get(UPLOADED_FOLDER + imageName);
+        Files.write(path, bytes);
+        user.setImagePath(imageName);
+        userRepository.save(user);
+    }
+
+    @Override
+    public Resource loadPicture(long id) {
+        String imagePath = getCurrentUserEntity().getImagePath();
+        Path path = Paths.get(UPLOADED_FOLDER + imagePath);
+        try {
+            return new ByteArrayResource(Files.readAllBytes(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

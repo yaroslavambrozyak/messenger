@@ -1,10 +1,8 @@
 package com.study.yaroslavambrozyak.messenger.service;
 
-import com.study.yaroslavambrozyak.messenger.dto.ChatRoomCreateDTO;
-import com.study.yaroslavambrozyak.messenger.dto.ChatRoomDTO;
-import com.study.yaroslavambrozyak.messenger.dto.MessageDTO;
-import com.study.yaroslavambrozyak.messenger.dto.UserDTO;
+import com.study.yaroslavambrozyak.messenger.dto.*;
 import com.study.yaroslavambrozyak.messenger.entity.ChatRoom;
+import com.study.yaroslavambrozyak.messenger.entity.Message;
 import com.study.yaroslavambrozyak.messenger.entity.User;
 import com.study.yaroslavambrozyak.messenger.exception.ChatRoomNotFoundException;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
@@ -24,14 +22,20 @@ import java.util.Optional;
 @Service
 public class ChatRoomServiceImpl implements ChatRoomService {
 
-    @Autowired
+
     private ChatRoomRepository chatRoomRepository;
-    @Autowired
     private UserService userService;
-    @Autowired
     private ModelMapper modelMapper;
-    @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    public ChatRoomServiceImpl(ChatRoomRepository chatRoomRepository, UserService userService,
+                               ModelMapper modelMapper, MessageSource messageSource) {
+        this.chatRoomRepository = chatRoomRepository;
+        this.userService = userService;
+        this.modelMapper = modelMapper;
+        this.messageSource = messageSource;
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
@@ -51,6 +55,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         User user = userService.getUserEntity(userId);
         chatRoom.getUsersInRoom().remove(user);
         chatRoomRepository.save(chatRoom);
+    }
+
+    @Override
+    public void updateChatRoom(long chatRoomId, ChatRoomCreateDTO chatRoomCreateDTO) {
+        ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
+        chatRoom.setName(chatRoomCreateDTO.getName());
+        chatRoomRepository.save(chatRoom);
+    }
+
+    @Override
+    public void deleteChatRoom(long chatRoomId) {
+        chatRoomRepository.delete(chatRoomId);
     }
 
     @Override
@@ -75,9 +91,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public Page<MessageDTO> getChatMessages(long id, Pageable pageable) {
+    public Page<MessageDateDTO> getChatMessages(long id, Pageable pageable) {
         return chatRoomRepository.getChatRoomMessages(id, pageable)
-                .map(message -> modelMapper.map(message, MessageDTO.class));
+                .map(message -> modelMapper.map(message,MessageDateDTO.class));
     }
 
     @Override
@@ -85,7 +101,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomRepository.getUsersInChatRoom(id, pageable)
                 .map(user -> modelMapper.map(user, UserDTO.class));
     }
-
 
     private boolean checkIsUserExist(ChatRoom chatRoom) {
         User user = userService.getCurrentUserEntity();

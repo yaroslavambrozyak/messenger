@@ -10,8 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
-    @Query("SELECT m FROM Message m WHERE m.chatRoom.id = ?1")
+    @Query("SELECT m FROM Message m WHERE m.chatRoom.id = ?1 ORDER BY m.localDateTime DESC")
     Page<Message> getChatRoomMessages(long id, Pageable pageable);
+
     @Query("SELECT u FROM User u JOIN u.userChatRooms c WHERE c.id=?1")
     Page<User> getUsersInChatRoom(long id, Pageable pageable);
 

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,13 +24,17 @@ public class User {
     private long id;
     private String name;
     private String surName;
+    @Column(unique = true)
+    private String email;
+    private String password;
+    private short gender;
+    private Date birthday;
+    private String imagePath = "default.jpg";
+
     @ManyToMany(mappedBy = "usersInRoom")
     private Set<ChatRoom> userChatRooms = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
     private Set<Message> messages = new HashSet<>();
-    @Column(unique = true)
-    private String email;
-    private String password;
     @ManyToMany
     @JoinTable(name = "user_friends",
             joinColumns = @JoinColumn(name = "user_id"),

@@ -8,9 +8,12 @@ import com.study.yaroslavambrozyak.messenger.entity.ChatRoom;
 import com.study.yaroslavambrozyak.messenger.entity.User;
 import com.study.yaroslavambrozyak.messenger.exception.UserAlreadyExists;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Set;
 
 public interface UserService {
@@ -46,4 +49,8 @@ public interface UserService {
     Page<UserDTO> getUserFriendRequest(Pageable pageable);
 
     void friendRequest(long friendId);
+
+    void uploadPicture(MultipartFile multipartFile) throws IOException;
+
+    Resource loadPicture(long id);
 }

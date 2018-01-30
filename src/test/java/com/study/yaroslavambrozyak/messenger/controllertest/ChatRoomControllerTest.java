@@ -3,10 +3,7 @@ package com.study.yaroslavambrozyak.messenger.controllertest;
 import com.study.yaroslavambrozyak.messenger.TestUtil;
 import com.study.yaroslavambrozyak.messenger.controller.ChatRoomController;
 import com.study.yaroslavambrozyak.messenger.controller.ExceptionController;
-import com.study.yaroslavambrozyak.messenger.dto.ChatRoomCreateDTO;
-import com.study.yaroslavambrozyak.messenger.dto.ChatRoomDTO;
-import com.study.yaroslavambrozyak.messenger.dto.MessageDTO;
-import com.study.yaroslavambrozyak.messenger.dto.UserDTO;
+import com.study.yaroslavambrozyak.messenger.dto.*;
 import com.study.yaroslavambrozyak.messenger.exception.ChatRoomNotFoundException;
 import com.study.yaroslavambrozyak.messenger.service.ChatRoomService;
 import com.study.yaroslavambrozyak.messenger.service.TokenAuthenticationService;
@@ -27,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -88,12 +86,12 @@ public class ChatRoomControllerTest {
 
     @Test
     public void testGetChatRoomMessagesSuccess() throws Exception{
-        List<MessageDTO> testList = Arrays.asList(
-                new MessageDTO("text1",1),
-                new MessageDTO("text2",2)
+        List<MessageDateDTO> testList = Arrays.asList(
+                new MessageDateDTO("text1",1,null),
+                new MessageDateDTO("text2",2,null)
         );
         PageRequest pageRequest = new PageRequest(0,2);
-        Page<MessageDTO> page = new PageImpl<>(testList,pageRequest,2);
+        Page<MessageDateDTO> page = new PageImpl<>(testList,pageRequest,2);
 
         when(chatRoomController.getChatMessages(1,pageRequest)).thenReturn(page);
 
@@ -111,8 +109,8 @@ public class ChatRoomControllerTest {
     @Test
     public void testGetUsersInChatRoomSuccess() throws Exception{
         List<UserDTO> testList = Arrays.asList(
-                new UserDTO(1,"testName","testSurName"),
-                new UserDTO(2,"testName","testSurName")
+                new UserDTO(1,"testName","testSurName",new Date()),
+                new UserDTO(2,"testName","testSurName",new Date())
         );
         PageRequest pageRequest = new PageRequest(0,2);
         Page<UserDTO> page = new PageImpl<>(testList,pageRequest,2);

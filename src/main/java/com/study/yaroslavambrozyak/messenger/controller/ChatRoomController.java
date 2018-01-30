@@ -1,9 +1,6 @@
 package com.study.yaroslavambrozyak.messenger.controller;
 
-import com.study.yaroslavambrozyak.messenger.dto.ChatRoomCreateDTO;
-import com.study.yaroslavambrozyak.messenger.dto.ChatRoomDTO;
-import com.study.yaroslavambrozyak.messenger.dto.MessageDTO;
-import com.study.yaroslavambrozyak.messenger.dto.UserDTO;
+import com.study.yaroslavambrozyak.messenger.dto.*;
 import com.study.yaroslavambrozyak.messenger.entity.Message;
 import com.study.yaroslavambrozyak.messenger.exception.ChatRoomNotFoundException;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
@@ -29,24 +26,34 @@ public class ChatRoomController {
     private ChatRoomService chatRoomService;
 
     @GetMapping("/chat/{id}")
-    public ChatRoomDTO getChatRoom(@PathVariable("id") long id){
+    public ChatRoomDTO getChatRoom(@PathVariable("id") long id) {
         return chatRoomService.getChatRoom(id);
     }
 
     @GetMapping("/chat/{id}/messages")
-    public Page<MessageDTO> getChatMessages(@PathVariable("id") long id, Pageable pageable){
-        return chatRoomService.getChatMessages(id,pageable);
+    public Page<MessageDateDTO> getChatMessages(@PathVariable("id") long id, Pageable pageable) {
+        return chatRoomService.getChatMessages(id, pageable);
     }
 
     @GetMapping("/chat/{id}/users")
-    public Page<UserDTO> getUsersInChat(@PathVariable("id") long id, Pageable pageable){
-        return chatRoomService.getUsersInChat(id,pageable);
+    public Page<UserDTO> getUsersInChat(@PathVariable("id") long id, Pageable pageable) {
+        return chatRoomService.getUsersInChat(id, pageable);
     }
 
     @PostMapping("/chat")
     @ResponseStatus(HttpStatus.CREATED)
-    public long createChatRoom(@Validated ChatRoomCreateDTO chatRoomCreateDTO){
+    public long createChatRoom(@Validated ChatRoomCreateDTO chatRoomCreateDTO) {
         return chatRoomService.createChatRoom(chatRoomCreateDTO);
+    }
+
+    @PutMapping("/chat/{id}")
+    public void updateChatRoom(@PathVariable("id") long id, @Validated ChatRoomCreateDTO chatRoomCreateDTO) {
+        chatRoomService.updateChatRoom(id, chatRoomCreateDTO);
+    }
+
+    @DeleteMapping("/chat/{id}")
+    public void deleteChatRoom(@PathVariable("id") long id){
+        chatRoomService.deleteChatRoom(id);
     }
 
     @PostMapping("/chat/{chatId}/add/{userId}")
@@ -55,7 +62,7 @@ public class ChatRoomController {
     }
 
     @DeleteMapping("/chat/{chatId}/delete/{userId}")
-    public void deleteUserFromChat(@PathVariable("chatId") long chatId, @PathVariable("userId") long userId){
-        chatRoomService.deleteUserFromChat(chatId,userId);
+    public void deleteUserFromChat(@PathVariable("chatId") long chatId, @PathVariable("userId") long userId) {
+        chatRoomService.deleteUserFromChat(chatId, userId);
     }
 }
