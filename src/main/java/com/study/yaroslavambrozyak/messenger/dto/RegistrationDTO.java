@@ -28,5 +28,5 @@ public class RegistrationDTO {
     private String password;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date birthday;
-    private short gender;
+    private boolean gender;
 }

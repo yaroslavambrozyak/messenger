@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
@@ -39,10 +40,12 @@ public class UserServiceTest {
     private ModelMapper modelMapper;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Before
     public void init() {
-        userService = new UserServiceImpl(userRepository, modelMapper,messageSource);
+        userService = new UserServiceImpl(userRepository, modelMapper,messageSource,passwordEncoder);
     }
 
     //TODO try user eq!
@@ -93,7 +96,7 @@ public class UserServiceTest {
     @Test
     public void createUserSuccess() {
         RegistrationDTO testRegistrationDTO = new RegistrationDTO("name", "sur"
-                , "email", "1111",new Date());
+                , "email", "1111",new Date(),true);
         User user = modelMapper.map(testRegistrationDTO, User.class);
 
         when(userRepository.save(user)).thenReturn(user);
@@ -107,7 +110,7 @@ public class UserServiceTest {
     @Test
     public void createUserAlreadyExist() {
         RegistrationDTO testRegistrationDTO = new RegistrationDTO("name", "sur"
-                , "email", "1111", new Date());
+                , "email", "1111", new Date(),true);
 
         when(userRepository.findByEmail("email")).thenReturn(new User());
 

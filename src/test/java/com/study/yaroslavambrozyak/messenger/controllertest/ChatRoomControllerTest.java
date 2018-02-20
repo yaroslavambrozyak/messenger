@@ -109,8 +109,8 @@ public class ChatRoomControllerTest {
     @Test
     public void testGetUsersInChatRoomSuccess() throws Exception{
         List<UserDTO> testList = Arrays.asList(
-                new UserDTO(1,"testName","testSurName",new Date()),
-                new UserDTO(2,"testName","testSurName",new Date())
+                new UserDTO(1,"testName","testSurName",new Date(),true),
+                new UserDTO(2,"testName","testSurName",new Date(),true)
         );
         PageRequest pageRequest = new PageRequest(0,2);
         Page<UserDTO> page = new PageImpl<>(testList,pageRequest,2);

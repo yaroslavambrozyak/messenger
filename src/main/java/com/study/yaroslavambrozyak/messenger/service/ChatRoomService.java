@@ -29,4 +29,6 @@ public interface ChatRoomService {
     void updateChatRoom(long chatRoomId, ChatRoomCreateDTO chatRoomCreateDTO);
 
     void deleteChatRoom(long chatRoomId);
+
+    ChatRoom saveChatRoom(ChatRoom chatRoom);
 }

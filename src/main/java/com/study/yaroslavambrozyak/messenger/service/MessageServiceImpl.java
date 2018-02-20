@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -35,6 +36,7 @@ public class MessageServiceImpl implements MessageService {
     private ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public MessageDateDTO saveMessage(MessageDTO messageDTO, long chatId){
         ChatRoom chatRoom = chatRoomService.getChatRoomEntity(chatId);
         Message message = modelMapper.map(messageDTO, Message.class);
@@ -42,9 +44,7 @@ public class MessageServiceImpl implements MessageService {
         User user = userService.getUserEntity(messageDTO.getUserId());
         message.setUser(user);
         message.setChatRoom(chatRoom);
+        chatRoomService.saveChatRoom(chatRoom);
         return modelMapper.map(messageRepository.save(message),MessageDateDTO.class);
     }
-
-
-
 }

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,4 +28,5 @@ public class ChatRoom {
     private Set<User> usersInRoom = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chatRoom")
     private Set<Message> messages = new HashSet<>();
+    private LocalDateTime lastActivity;
 }

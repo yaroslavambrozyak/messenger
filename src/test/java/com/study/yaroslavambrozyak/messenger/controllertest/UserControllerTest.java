@@ -129,8 +129,8 @@ public class UserControllerTest {
     @Test
     public void testGetUserFriendsReqSuccess() throws Exception{
         List<UserDTO> testList = Arrays.asList(
-                new UserDTO(1,"testName","testSurname",new Date())
-                ,new UserDTO(2,"testName","testSurname",new Date()));
+                new UserDTO(1,"testName","testSurname",new Date(),true)
+                ,new UserDTO(2,"testName","testSurname",new Date(),true));
         PageRequest pageRequest = new PageRequest(0,2);
         Page<UserDTO> testPage = new PageImpl<>(testList,pageRequest,2);
 
@@ -161,8 +161,8 @@ public class UserControllerTest {
     @Test
     public void testGetFriendsRequestSuccess() throws Exception {
         List<UserDTO> testList = Arrays.asList(
-                new UserDTO(1,"testName","testSurname",new Date())
-                ,new UserDTO(2,"testName","testSurname",new Date()));
+                new UserDTO(1,"testName","testSurname",new Date(),true)
+                ,new UserDTO(2,"testName","testSurname",new Date(),true));
         PageRequest pageRequest = new PageRequest(0,2);
         Page<UserDTO> testPage = new PageImpl<>(testList,pageRequest,2);
 

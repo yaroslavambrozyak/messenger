@@ -20,5 +20,5 @@ public class UserDTO {
     private String surName;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date birthday;
-    private short gender;
+    private boolean gender;
 }

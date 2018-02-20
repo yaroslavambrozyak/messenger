@@ -27,7 +27,7 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
-    private short gender;
+    private boolean gender;
     private Date birthday;
     private String imagePath = "default.jpg";
 

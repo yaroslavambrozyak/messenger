@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -54,19 +55,25 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
         User user = userService.getUserEntity(userId);
         chatRoom.getUsersInRoom().remove(user);
-        chatRoomRepository.save(chatRoom);
+        saveChatRoom(chatRoom);
     }
 
     @Override
     public void updateChatRoom(long chatRoomId, ChatRoomCreateDTO chatRoomCreateDTO) {
         ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
         chatRoom.setName(chatRoomCreateDTO.getName());
-        chatRoomRepository.save(chatRoom);
+        saveChatRoom(chatRoom);
     }
 
     @Override
     public void deleteChatRoom(long chatRoomId) {
         chatRoomRepository.delete(chatRoomId);
+    }
+
+    @Override
+    public ChatRoom saveChatRoom(ChatRoom chatRoom) {
+        chatRoom.setLastActivity(LocalDateTime.now());
+        return chatRoomRepository.save(chatRoom);
     }
 
     @Override
@@ -79,7 +86,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         ChatRoom chatRoom = modelMapper.map(chatRoomCreateDTO, ChatRoom.class);
         User user = userService.getCurrentUserEntity();
         chatRoom.getUsersInRoom().add(user);
-        return chatRoomRepository.save(chatRoom).getId();
+        return saveChatRoom(chatRoom).getId();
     }
 
     @Override
@@ -87,13 +94,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
         User user = userService.getUserEntity(userId);
         chatRoom.getUsersInRoom().add(user);
-        chatRoomRepository.save(chatRoom);
+        saveChatRoom(chatRoom);
     }
 
     @Override
     public Page<MessageDateDTO> getChatMessages(long id, Pageable pageable) {
         return chatRoomRepository.getChatRoomMessages(id, pageable)
-                .map(message -> modelMapper.map(message,MessageDateDTO.class));
+                .map(message -> modelMapper.map(message, MessageDateDTO.class));
     }
 
     @Override

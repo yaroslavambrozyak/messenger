@@ -11,8 +11,6 @@ import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.repository.UserRepository;
 import com.study.yaroslavambrozyak.messenger.util.NullAwareBeanUtil;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -20,16 +18,17 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,13 +37,15 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private ModelMapper modelMapper;
     private MessageSource messageSource;
-
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, MessageSource messageSource) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper
+            , MessageSource messageSource, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.messageSource = messageSource;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -88,7 +89,9 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = Optional.ofNullable(userRepository.findByEmail(registrationDTO.getEmail()));
         if (user.isPresent()) throw new UserAlreadyExists(messageSource.getMessage("exception.user.already-exist",
                 new Object[]{registrationDTO.getEmail()}, LocaleContextHolder.getLocale()));
-        userRepository.save(modelMapper.map(registrationDTO, User.class));
+        User newUser = modelMapper.map(registrationDTO,User.class);
+        newUser.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
+        userRepository.save(newUser);
     }
 
     @Override
@@ -178,7 +181,7 @@ public class UserServiceImpl implements UserService {
     }
 
     //??????????
-    private static String UPLOADED_FOLDER = "D://temp//";
+    private static String UPLOAD_FOLDER = System.getProperty("catalina.home");
 
     @Override
     public void uploadPicture(MultipartFile multipartFile) throws IOException {
@@ -188,7 +191,7 @@ public class UserServiceImpl implements UserService {
         byte[] bytes = multipartFile.getBytes();
         String type = multipartFile.getContentType().split("/")[1];
         String imageName = "pic-" + user.getId() + "." + type;
-        Path path = Paths.get(UPLOADED_FOLDER + imageName);
+        Path path = Paths.get(UPLOAD_FOLDER + imageName);
         Files.write(path, bytes);
         user.setImagePath(imageName);
         userRepository.save(user);
@@ -197,7 +200,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Resource loadPicture(long id) throws IOException {
         String imagePath = getCurrentUserEntity().getImagePath();
-        Path path = Paths.get(UPLOADED_FOLDER + imagePath);
+        Path path = Paths.get(UPLOAD_FOLDER + imagePath);
         return new ByteArrayResource(Files.readAllBytes(path));
+    }
+
+    @Override
+    public Page<UserDTO> searchUsers(Specification<User> specification, Pageable pageable) {
+        return userRepository.findAll(specification,pageable)
+                .map(user -> modelMapper.map(user,UserDTO.class));
     }
 }
