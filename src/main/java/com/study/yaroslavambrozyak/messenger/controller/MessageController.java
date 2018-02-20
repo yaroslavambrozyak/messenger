@@ -25,6 +25,12 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
+    /**
+     * Send message to all users in chat room
+     * @param id chat room id
+     * @param messageDTO message data
+     * @return message data which saved in DB
+     */
     @MessageMapping("/chat/{id}")
     @SendTo("/topic/{id}")
     public MessageDateDTO message(@DestinationVariable("id") long id, @Validated MessageDTO messageDTO) {

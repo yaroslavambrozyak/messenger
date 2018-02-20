@@ -28,15 +28,11 @@ public interface UserService {
 
     UserDTO getUserById(long id);
 
-    UserDTO getUserByUserName(String userName);
-
     void createUser(RegistrationDTO registrationDTO);
 
     void updateUser(UserUpdateDTO user);
 
     void deleteUser();
-
-    long getUserIdByName(String name);
 
     Page<ChatRoomDTO> getUserChats(Pageable pageable);
 

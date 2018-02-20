@@ -38,6 +38,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         this.messageSource = messageSource;
     }
 
+    /**
+     * This method check if there is a chat room and if there is current user in this chat room.
+     * If chat room is not exists or user is not in chat throws exception.
+     * @param id
+     * @return chat room
+     */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
     public ChatRoom getChatRoomEntity(long id) {
@@ -50,37 +56,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoom;
     }
 
-    @Override
-    public void deleteUserFromChat(long chatRoomId, long userId) {
-        ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
-        User user = userService.getUserEntity(userId);
-        chatRoom.getUsersInRoom().remove(user);
-        saveChatRoom(chatRoom);
-    }
-
-    @Override
-    public void updateChatRoom(long chatRoomId, ChatRoomCreateDTO chatRoomCreateDTO) {
-        ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
-        chatRoom.setName(chatRoomCreateDTO.getName());
-        saveChatRoom(chatRoom);
-    }
-
-    @Override
-    public void deleteChatRoom(long chatRoomId) {
-        chatRoomRepository.delete(chatRoomId);
-    }
-
-    @Override
-    public ChatRoom saveChatRoom(ChatRoom chatRoom) {
-        chatRoom.setLastActivity(LocalDateTime.now());
-        return chatRoomRepository.save(chatRoom);
-    }
-
-    @Override
-    public ChatRoomDTO getChatRoom(long id) {
-        return modelMapper.map(getChatRoomEntity(id), ChatRoomDTO.class);
-    }
-
+    /**
+     * This method creates new chat room
+     * @param chatRoomCreateDTO
+     * @return chat`s id
+     */
     @Override
     public long createChatRoom(ChatRoomCreateDTO chatRoomCreateDTO) {
         ChatRoom chatRoom = modelMapper.map(chatRoomCreateDTO, ChatRoom.class);
@@ -89,6 +69,53 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return saveChatRoom(chatRoom).getId();
     }
 
+    /**
+     * This method is used to update chat room by id
+     * @param chatRoomId
+     * @param chatRoomCreateDTO
+     */
+    @Override
+    public void updateChatRoom(long chatRoomId, ChatRoomCreateDTO chatRoomCreateDTO) {
+        ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
+        chatRoom.setName(chatRoomCreateDTO.getName());
+        saveChatRoom(chatRoom);
+    }
+
+    /**
+     * This method is used to delete chat room
+     * @param chatRoomId
+     */
+    @Override
+    public void deleteChatRoom(long chatRoomId) {
+        chatRoomRepository.delete(chatRoomId);
+    }
+
+    /**
+     * This method is used to save chat room and update last activity time
+     * @param chatRoom
+     * @return chat room entity
+     */
+    @Override
+    public ChatRoom saveChatRoom(ChatRoom chatRoom) {
+        chatRoom.setLastActivity(LocalDateTime.now());
+        return chatRoomRepository.save(chatRoom);
+    }
+
+    /**
+     * This method is used to get chat room and map it to data transferred object
+     * @param id
+     * @return chat room data
+     */
+    @Override
+    public ChatRoomDTO getChatRoom(long id) {
+        return modelMapper.map(getChatRoomEntity(id), ChatRoomDTO.class);
+    }
+
+    /**
+     * This method is used to add user to chat
+     * @param chatRoomId
+     * @param userId
+     */
     @Override
     public void addUserToChat(long chatRoomId, long userId) {
         ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
@@ -97,12 +124,37 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         saveChatRoom(chatRoom);
     }
 
+    /**
+     * This method is used to delete user from chat room
+     * @param chatRoomId from which chat you delete user
+     * @param userId which user you delete
+     */
+    @Override
+    public void deleteUserFromChat(long chatRoomId, long userId) {
+        ChatRoom chatRoom = getChatRoomEntity(chatRoomId);
+        User user = userService.getUserEntity(userId);
+        chatRoom.getUsersInRoom().remove(user);
+        saveChatRoom(chatRoom);
+    }
+
+    /**
+     * This method is used to get all chat`s messages
+     * @param id
+     * @param pageable
+     * @return list of messages
+     */
     @Override
     public Page<MessageDateDTO> getChatMessages(long id, Pageable pageable) {
         return chatRoomRepository.getChatRoomMessages(id, pageable)
                 .map(message -> modelMapper.map(message, MessageDateDTO.class));
     }
 
+    /**
+     * This method is used to get all users in chat
+     * @param id
+     * @param pageable
+     * @return list of users
+     */
     @Override
     public Page<UserDTO> getUsersInChat(long id, Pageable pageable) {
         return chatRoomRepository.getUsersInChatRoom(id, pageable)

@@ -34,6 +34,8 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static String UPLOAD_FOLDER = System.getProperty("catalina.home");
+
     private UserRepository userRepository;
     private ModelMapper modelMapper;
     private MessageSource messageSource;
@@ -48,6 +50,12 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * This method is used to get user entity from database by id.
+     * If the user is not found throws exception
+     * @param id
+     * @return user entity
+     */
     @Override
     public User getUserEntity(long id) {
         return Optional.ofNullable(userRepository.findOne(id))
@@ -56,6 +64,11 @@ public class UserServiceImpl implements UserService {
                                 new Object[]{id}, LocaleContextHolder.getLocale())));
     }
 
+    /**
+     * This method is used to get current user entity from database by auth token.
+     * If the user is not found throws exception
+     * @return current user entity
+     */
     @Override
     public User getCurrentUserEntity() {
         return Optional.ofNullable(
@@ -65,25 +78,29 @@ public class UserServiceImpl implements UserService {
                                 LocaleContextHolder.getLocale())));
     }
 
+    /**
+     * This method is used to map current user entity to user data transferred object
+     * @return current userDTO
+     */
     @Override
     public UserDTO getCurrentUser() {
         return modelMapper.map(getCurrentUserEntity(), UserDTO.class);
     }
 
+    /**
+     * This method is used to map user entity to user data transferred object
+     * @return userDTO
+     */
     @Override
     public UserDTO getUserById(long id) {
         return modelMapper.map(getUserEntity(id), UserDTO.class);
     }
 
-    @Override
-    public UserDTO getUserByUserName(String userName) {
-        User user = Optional.ofNullable(userRepository.findByName(userName))
-                .orElseThrow(() -> new UserNotFoundException(
-                        messageSource.getMessage("exception.user.not-found-by-name",
-                                new Object[]{userName}, LocaleContextHolder.getLocale())));
-        return modelMapper.map(user, UserDTO.class);
-    }
-
+    /**
+     * This method checks if there is a user with the transferred email address.
+     * If user is exists throws exception. Else create new user
+     * @param registrationDTO
+     */
     @Override
     public void createUser(RegistrationDTO registrationDTO) {
         Optional<User> user = Optional.ofNullable(userRepository.findByEmail(registrationDTO.getEmail()));
@@ -94,30 +111,42 @@ public class UserServiceImpl implements UserService {
         userRepository.save(newUser);
     }
 
+    /**
+     * This method is used to update user entity
+     * @param userUpdateDTO data for update
+     */
     @Override
-    public void updateUser(UserUpdateDTO user) {
+    public void updateUser(UserUpdateDTO userUpdateDTO) {
         User userToUpdate = getCurrentUserEntity();
-        NullAwareBeanUtil.copyProperties(user, userToUpdate);
+        NullAwareBeanUtil.copyProperties(userUpdateDTO, userToUpdate);
         userRepository.save(userToUpdate);
     }
 
+    /**
+     * This method is used to delete current user entity
+     */
     @Override
     public void deleteUser() {
         userRepository.delete(getCurrentUserEntity());
     }
 
-    @Override
-    public long getUserIdByName(String name) {
-        return userRepository.getUserId(name);
-    }
-
+    /**
+     * This method is used to get all user`s chats and map their to data transferred object
+     * @param pageable
+     * @return list of chats DTO
+     */
     @Override
     public Page<ChatRoomDTO> getUserChats(Pageable pageable) {
         return userRepository.getChatRoom(getCurrentUserEntity().getId(), pageable)
                 .map(chatRoom -> modelMapper.map(chatRoom, ChatRoomDTO.class));
     }
 
-
+    /**
+     * This method checks if there is a user with transferred id in friend request list.
+     * If user is exists delete him from friend request list and add to friend list.
+     * If user is not exists throws exception.
+     * @param friendId
+     */
     @Override
     public void addFriend(long friendId) {
         User user = getCurrentUserEntity();
@@ -136,6 +165,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * This method check if there is a user with transferred id in friend list.
+     * If user is exists delete him. Else throws exception
+     * @param friendId
+     */
     @Override
     public void deleteFriend(long friendId) {
         User user = getCurrentUserEntity();
@@ -151,27 +185,51 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * This method is used to get all user`s friends by user id
+     * @param id
+     * @param pageable
+     * @return list of friends
+     */
     @Override
     public Page<UserDTO> getUserFriends(long id, Pageable pageable) {
         return userRepository.getUserFriends(id, pageable)
                 .map(user -> modelMapper.map(user, UserDTO.class));
     }
 
+    /**
+     * This method is used to get all current user`s friends
+     * @param pageable
+     * @return
+     */
     @Override
     public Page<UserDTO> getUserFriends(Pageable pageable) {
         return getUserFriends(getCurrentUserEntity().getId(), pageable);
     }
 
+    /**
+     * This method is used to get all current user`s friend requests
+     * @param pageable
+     * @return
+     */
     @Override
     public Page<UserDTO> getUserFriendRequest(Pageable pageable) {
         return userRepository.getUserFriendRequest(getCurrentUserEntity().getId(), pageable)
                 .map(user -> modelMapper.map(user, UserDTO.class));
     }
 
+    /**
+     * This method checks if there is a user in friend list and it is not request to yourself.
+     * If both conditions are met make friend request.
+     * Throws exception if request to yourself
+     * @param friendId
+     */
     @Override
     public void friendRequest(long friendId) {
         User current = getCurrentUserEntity();
-        boolean isNotExist = current.getFriends().stream().noneMatch(friend -> friend.getId() == friendId);
+        boolean isNotExist = current.getFriends()
+                .parallelStream()
+                .noneMatch(friend -> friend.getId() == friendId);
         if (friendId == current.getId() && isNotExist)
             throw new SameUserException(messageSource.getMessage("exception.user.self-friend-req"
                     , null, LocaleContextHolder.getLocale()));
@@ -180,9 +238,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    //??????????
-    private static String UPLOAD_FOLDER = System.getProperty("catalina.home");
-
+    /**
+     * This method is used to upload user`s profile picture
+     * @param multipartFile
+     * @throws IOException if file is empty
+     */
     @Override
     public void uploadPicture(MultipartFile multipartFile) throws IOException {
         if (multipartFile.isEmpty())
@@ -197,6 +257,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    /**
+     * This method is used to get user`s profile picture
+     * @param id
+     * @return user picture
+     * @throws IOException
+     */
     @Override
     public Resource loadPicture(long id) throws IOException {
         String imagePath = getCurrentUserEntity().getImagePath();
@@ -204,6 +270,12 @@ public class UserServiceImpl implements UserService {
         return new ByteArrayResource(Files.readAllBytes(path));
     }
 
+    /**
+     * This method search users by specific parameters
+     * @param specification
+     * @param pageable
+     * @return list of users
+     */
     @Override
     public Page<UserDTO> searchUsers(Specification<User> specification, Pageable pageable) {
         return userRepository.findAll(specification,pageable)

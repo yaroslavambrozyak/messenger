@@ -24,6 +24,12 @@ public class SearchController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Search for users for parameters
+     * @param search parameters for search
+     * @param pageable
+     * @return list of users
+     */
     @GetMapping("/search")
     public Page<UserDTO> search(@RequestParam("filter") String search, Pageable pageable) {
         UserSpecificationsBuilder builder = new UserSpecificationsBuilder();

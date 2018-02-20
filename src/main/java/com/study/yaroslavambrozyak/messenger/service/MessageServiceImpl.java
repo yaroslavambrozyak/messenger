@@ -35,6 +35,12 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * This method is used to save message
+     * @param messageDTO message data
+     * @param chatId
+     * @return
+     */
     @Override
     @Transactional
     public MessageDateDTO saveMessage(MessageDTO messageDTO, long chatId){

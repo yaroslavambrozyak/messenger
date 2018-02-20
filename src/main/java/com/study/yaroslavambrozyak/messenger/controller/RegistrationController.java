@@ -21,6 +21,10 @@ public class RegistrationController {
     @Autowired
     private UserService userService;
 
+    /**
+     *Register new user
+     * @param registrationDTO
+     */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void registration(@Validated RegistrationDTO registrationDTO){
