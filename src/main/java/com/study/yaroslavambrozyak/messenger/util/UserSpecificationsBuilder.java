@@ -34,7 +34,6 @@ public class UserSpecificationsBuilder {
         for (int i = 1; i < specs.size(); i++) {
             result = Specifications.where(result).and(specs.get(i));
         }
-        params.clear();
         return result;
     }
 }

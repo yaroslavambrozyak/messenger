@@ -20,10 +20,4 @@ public class MessengerApplication {
 	public ModelMapper modelMapper(){
 		return new ModelMapper();
 	}
-
-	@Bean
-	@Scope
-	public UserSpecificationsBuilder specificationsBuilder(){
-		return new UserSpecificationsBuilder();
-	}
 }

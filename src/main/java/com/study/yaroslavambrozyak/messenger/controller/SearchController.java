@@ -20,13 +20,13 @@ import java.util.regex.Pattern;
 @RequestMapping("/app")
 public class SearchController {
 
-    @Autowired
-    private UserSpecificationsBuilder builder;
+
     @Autowired
     private UserService userService;
 
     @GetMapping("/search")
     public Page<UserDTO> search(@RequestParam("filter") String search, Pageable pageable) {
+        UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
         Pattern pattern = Pattern.compile("(\\w+?)([:<>])(\\w+?),");
         Matcher matcher = pattern.matcher(search + ",");
         while (matcher.find()) {
