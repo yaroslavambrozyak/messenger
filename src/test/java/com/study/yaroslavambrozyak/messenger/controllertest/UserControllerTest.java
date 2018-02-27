@@ -6,6 +6,7 @@ import com.study.yaroslavambrozyak.messenger.controller.UserController;
 import com.study.yaroslavambrozyak.messenger.dto.ChatRoomDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserUpdateDTO;
+import com.study.yaroslavambrozyak.messenger.entity.Gender;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
 import com.study.yaroslavambrozyak.messenger.service.TokenAuthenticationService;
 import com.study.yaroslavambrozyak.messenger.service.UserService;
@@ -129,8 +130,8 @@ public class UserControllerTest {
     @Test
     public void testGetUserFriendsReqSuccess() throws Exception{
         List<UserDTO> testList = Arrays.asList(
-                new UserDTO(1,"testName","testSurname",new Date(),true)
-                ,new UserDTO(2,"testName","testSurname",new Date(),true));
+                new UserDTO(1,"testName","testSurname",new Date(), Gender.MALE)
+                ,new UserDTO(2,"testName","testSurname",new Date(),Gender.MALE));
         PageRequest pageRequest = new PageRequest(0,2);
         Page<UserDTO> testPage = new PageImpl<>(testList,pageRequest,2);
 
@@ -161,8 +162,8 @@ public class UserControllerTest {
     @Test
     public void testGetFriendsRequestSuccess() throws Exception {
         List<UserDTO> testList = Arrays.asList(
-                new UserDTO(1,"testName","testSurname",new Date(),true)
-                ,new UserDTO(2,"testName","testSurname",new Date(),true));
+                new UserDTO(1,"testName","testSurname",new Date(),Gender.MALE)
+                ,new UserDTO(2,"testName","testSurname",new Date(),Gender.FEMALE));
         PageRequest pageRequest = new PageRequest(0,2);
         Page<UserDTO> testPage = new PageImpl<>(testList,pageRequest,2);
 
@@ -248,6 +249,4 @@ public class UserControllerTest {
         verify(userService,times(1)).getUserChats(pageRequest);
         verifyNoMoreInteractions(userService);
     }
-
-
 }

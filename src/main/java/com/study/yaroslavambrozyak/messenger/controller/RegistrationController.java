@@ -23,7 +23,7 @@ public class RegistrationController {
 
     /**
      *Register new user
-     * @param registrationDTO
+     * @param registrationDTO user data
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)

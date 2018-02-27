@@ -27,7 +27,7 @@ public class ChatRoomController {
 
     /**
      * Get chat room by id
-     * @param id
+     * @param id chat`s id
      * @return chat room data
      */
     @GetMapping("/chat/{id}")
@@ -48,7 +48,7 @@ public class ChatRoomController {
 
     /**
      * Update chat room by id
-     * @param id
+     * @param id chat`s id
      * @param chatRoomCreateDTO chat room data
      */
     @PutMapping("/chat/{id}")
@@ -58,7 +58,7 @@ public class ChatRoomController {
 
     /**
      * Delete chat room by id
-     * @param id
+     * @param id chat`s id
      */
     @DeleteMapping("/chat/{id}")
     public void deleteChatRoom(@PathVariable("id") long id){
@@ -67,8 +67,8 @@ public class ChatRoomController {
 
     /**
      * Get all users in chat by id
-     * @param id
-     * @param pageable
+     * @param id chat`s id
+     * @param pageable page
      * @return list of users
      */
     @GetMapping("/chat/{id}/users")
@@ -98,8 +98,8 @@ public class ChatRoomController {
 
     /**
      * Get all messages from chat by id
-     * @param id
-     * @param pageable
+     * @param id chat`s id
+     * @param pageable page
      * @return list of messages
      */
     @GetMapping("/chat/{id}/messages")

@@ -1,6 +1,7 @@
 package com.study.yaroslavambrozyak.messenger.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.study.yaroslavambrozyak.messenger.entity.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,5 @@ public class UserDTO {
     private String surName;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date birthday;
-    private boolean gender;
+    private Gender gender;
 }

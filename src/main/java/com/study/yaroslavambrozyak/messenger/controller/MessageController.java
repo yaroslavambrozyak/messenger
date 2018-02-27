@@ -27,7 +27,7 @@ public class MessageController {
 
     /**
      * Send message to all users in chat room
-     * @param id chat room id
+     * @param id chat`s id
      * @param messageDTO message data
      * @return message data which saved in DB
      */

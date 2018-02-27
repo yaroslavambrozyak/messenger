@@ -4,6 +4,7 @@ import com.study.yaroslavambrozyak.messenger.TestUtil;
 import com.study.yaroslavambrozyak.messenger.controller.ChatRoomController;
 import com.study.yaroslavambrozyak.messenger.controller.ExceptionController;
 import com.study.yaroslavambrozyak.messenger.dto.*;
+import com.study.yaroslavambrozyak.messenger.entity.Gender;
 import com.study.yaroslavambrozyak.messenger.exception.ChatRoomNotFoundException;
 import com.study.yaroslavambrozyak.messenger.service.ChatRoomService;
 import com.study.yaroslavambrozyak.messenger.service.TokenAuthenticationService;
@@ -109,8 +110,8 @@ public class ChatRoomControllerTest {
     @Test
     public void testGetUsersInChatRoomSuccess() throws Exception{
         List<UserDTO> testList = Arrays.asList(
-                new UserDTO(1,"testName","testSurName",new Date(),true),
-                new UserDTO(2,"testName","testSurName",new Date(),true)
+                new UserDTO(1,"testName","testSurName",new Date(), Gender.MALE),
+                new UserDTO(2,"testName","testSurName",new Date(),Gender.FEMALE)
         );
         PageRequest pageRequest = new PageRequest(0,2);
         Page<UserDTO> page = new PageImpl<>(testList,pageRequest,2);
@@ -127,7 +128,7 @@ public class ChatRoomControllerTest {
         verify(chatRoomService,times(1)).getUsersInChat(1,pageRequest);
         verifyNoMoreInteractions(chatRoomService);
     }
-    //TODO fix 400 resp
+
     @Test
     public void testCreateChatRoomSuccess() throws Exception{
         ChatRoomCreateDTO createDTO = new ChatRoomCreateDTO("testRoom");

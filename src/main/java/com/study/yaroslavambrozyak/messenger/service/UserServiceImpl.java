@@ -22,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
     /**
      * This method is used to get user entity from database by id.
      * If the user is not found throws exception
-     * @param id
+     * @param id user`s id
      * @return user entity
      */
     @Override
@@ -82,6 +83,7 @@ public class UserServiceImpl implements UserService {
      * This method is used to map current user entity to user data transferred object
      * @return current userDTO
      */
+    @Transactional(readOnly = true)
     @Override
     public UserDTO getCurrentUser() {
         return modelMapper.map(getCurrentUserEntity(), UserDTO.class);
@@ -91,6 +93,7 @@ public class UserServiceImpl implements UserService {
      * This method is used to map user entity to user data transferred object
      * @return userDTO
      */
+    @Transactional(readOnly = true)
     @Override
     public UserDTO getUserById(long id) {
         return modelMapper.map(getUserEntity(id), UserDTO.class);
@@ -99,7 +102,7 @@ public class UserServiceImpl implements UserService {
     /**
      * This method checks if there is a user with the transferred email address.
      * If user is exists throws exception. Else create new user
-     * @param registrationDTO
+     * @param registrationDTO user`s data
      */
     @Override
     public void createUser(RegistrationDTO registrationDTO) {
@@ -132,9 +135,10 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This method is used to get all user`s chats and map their to data transferred object
-     * @param pageable
+     * @param pageable page
      * @return list of chats DTO
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<ChatRoomDTO> getUserChats(Pageable pageable) {
         return userRepository.getChatRoom(getCurrentUserEntity().getId(), pageable)
@@ -145,7 +149,7 @@ public class UserServiceImpl implements UserService {
      * This method checks if there is a user with transferred id in friend request list.
      * If user is exists delete him from friend request list and add to friend list.
      * If user is not exists throws exception.
-     * @param friendId
+     * @param friendId friend`s id
      */
     @Override
     public void addFriend(long friendId) {
@@ -168,7 +172,7 @@ public class UserServiceImpl implements UserService {
     /**
      * This method check if there is a user with transferred id in friend list.
      * If user is exists delete him. Else throws exception
-     * @param friendId
+     * @param friendId friend`s id
      */
     @Override
     public void deleteFriend(long friendId) {
@@ -187,10 +191,11 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This method is used to get all user`s friends by user id
-     * @param id
-     * @param pageable
+     * @param id user`s id
+     * @param pageable page
      * @return list of friends
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<UserDTO> getUserFriends(long id, Pageable pageable) {
         return userRepository.getUserFriends(id, pageable)
@@ -199,9 +204,10 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This method is used to get all current user`s friends
-     * @param pageable
-     * @return
+     * @param pageable page
+     * @return userDTO
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<UserDTO> getUserFriends(Pageable pageable) {
         return getUserFriends(getCurrentUserEntity().getId(), pageable);
@@ -209,9 +215,10 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This method is used to get all current user`s friend requests
-     * @param pageable
-     * @return
+     * @param pageable page
+     * @return userDTO
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<UserDTO> getUserFriendRequest(Pageable pageable) {
         return userRepository.getUserFriendRequest(getCurrentUserEntity().getId(), pageable)
@@ -222,7 +229,7 @@ public class UserServiceImpl implements UserService {
      * This method checks if there is a user in friend list and it is not request to yourself.
      * If both conditions are met make friend request.
      * Throws exception if request to yourself
-     * @param friendId
+     * @param friendId friend`s id
      */
     @Override
     public void friendRequest(long friendId) {
@@ -240,7 +247,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This method is used to upload user`s profile picture
-     * @param multipartFile
+     * @param multipartFile file
      * @throws IOException if file is empty
      */
     @Override
@@ -259,7 +266,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This method is used to get user`s profile picture
-     * @param id
+     * @param id user`s id
      * @return user picture
      * @throws IOException
      */
@@ -272,10 +279,11 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This method search users by specific parameters
-     * @param specification
-     * @param pageable
+     * @param specification search params
+     * @param pageable page
      * @return list of users
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<UserDTO> searchUsers(Specification<User> specification, Pageable pageable) {
         return userRepository.findAll(specification,pageable)

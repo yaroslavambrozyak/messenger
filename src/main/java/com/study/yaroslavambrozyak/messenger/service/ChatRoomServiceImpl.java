@@ -23,7 +23,6 @@ import java.util.Optional;
 @Service
 public class ChatRoomServiceImpl implements ChatRoomService {
 
-
     private ChatRoomRepository chatRoomRepository;
     private UserService userService;
     private ModelMapper modelMapper;
@@ -41,11 +40,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     /**
      * This method check if there is a chat room and if there is current user in this chat room.
      * If chat room is not exists or user is not in chat throws exception.
-     * @param id
+     * @param id chat`s id
      * @return chat room
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
     public ChatRoom getChatRoomEntity(long id) {
         ChatRoom chatRoom = Optional.ofNullable(chatRoomRepository.findOne(id))
                 .orElseThrow(() -> new ChatRoomNotFoundException(messageSource.getMessage("exception.chat-room.not-found-by-id",
@@ -58,7 +56,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     /**
      * This method creates new chat room
-     * @param chatRoomCreateDTO
+     * @param chatRoomCreateDTO chat`s data
      * @return chat`s id
      */
     @Override
@@ -71,8 +69,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     /**
      * This method is used to update chat room by id
-     * @param chatRoomId
-     * @param chatRoomCreateDTO
+     * @param chatRoomId chat`s id
+     * @param chatRoomCreateDTO chat`s data
      */
     @Override
     public void updateChatRoom(long chatRoomId, ChatRoomCreateDTO chatRoomCreateDTO) {
@@ -83,7 +81,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     /**
      * This method is used to delete chat room
-     * @param chatRoomId
+     * @param chatRoomId chat`s id
      */
     @Override
     public void deleteChatRoom(long chatRoomId) {
@@ -92,7 +90,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     /**
      * This method is used to save chat room and update last activity time
-     * @param chatRoom
+     * @param chatRoom chat entity
      * @return chat room entity
      */
     @Override
@@ -103,9 +101,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     /**
      * This method is used to get chat room and map it to data transferred object
-     * @param id
+     * @param id chat`s id
      * @return chat room data
      */
+    @Transactional(readOnly = true)
     @Override
     public ChatRoomDTO getChatRoom(long id) {
         return modelMapper.map(getChatRoomEntity(id), ChatRoomDTO.class);
@@ -113,8 +112,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     /**
      * This method is used to add user to chat
-     * @param chatRoomId
-     * @param userId
+     * @param chatRoomId chat`s id
+     * @param userId user`s id
      */
     @Override
     public void addUserToChat(long chatRoomId, long userId) {
@@ -139,10 +138,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     /**
      * This method is used to get all chat`s messages
-     * @param id
-     * @param pageable
+     * @param id chat`s id
+     * @param pageable page
      * @return list of messages
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<MessageDateDTO> getChatMessages(long id, Pageable pageable) {
         return chatRoomRepository.getChatRoomMessages(id, pageable)
@@ -151,10 +151,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     /**
      * This method is used to get all users in chat
-     * @param id
-     * @param pageable
+     * @param id chat`s id
+     * @param pageable page
      * @return list of users
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<UserDTO> getUsersInChat(long id, Pageable pageable) {
         return chatRoomRepository.getUsersInChatRoom(id, pageable)
@@ -167,5 +168,4 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .parallelStream()
                 .anyMatch(userIn -> userIn.getId() == user.getId());
     }
-
 }

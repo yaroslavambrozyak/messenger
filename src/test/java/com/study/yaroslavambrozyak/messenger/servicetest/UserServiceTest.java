@@ -3,6 +3,7 @@ package com.study.yaroslavambrozyak.messenger.servicetest;
 import com.study.yaroslavambrozyak.messenger.dto.RegistrationDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserDTO;
 import com.study.yaroslavambrozyak.messenger.dto.UserUpdateDTO;
+import com.study.yaroslavambrozyak.messenger.entity.Gender;
 import com.study.yaroslavambrozyak.messenger.entity.User;
 import com.study.yaroslavambrozyak.messenger.exception.UserAlreadyExists;
 import com.study.yaroslavambrozyak.messenger.exception.UserNotFoundException;
@@ -45,10 +46,9 @@ public class UserServiceTest {
 
     @Before
     public void init() {
-        userService = new UserServiceImpl(userRepository, modelMapper,messageSource,passwordEncoder);
+        userService = new UserServiceImpl(userRepository, modelMapper, messageSource, passwordEncoder);
     }
 
-    //TODO try user eq!
     @Test
     public void getUserEntitySuccess() {
         User testUser = new User();
@@ -96,7 +96,7 @@ public class UserServiceTest {
     @Test
     public void createUserSuccess() {
         RegistrationDTO testRegistrationDTO = new RegistrationDTO("name", "sur"
-                , "email", "1111",new Date(),true);
+                , "email", "1111", new Date(), Gender.MALE);
         User user = modelMapper.map(testRegistrationDTO, User.class);
 
         when(userRepository.save(user)).thenReturn(user);
@@ -110,7 +110,7 @@ public class UserServiceTest {
     @Test
     public void createUserAlreadyExist() {
         RegistrationDTO testRegistrationDTO = new RegistrationDTO("name", "sur"
-                , "email", "1111", new Date(),true);
+                , "email", "1111", new Date(), Gender.MALE);
 
         when(userRepository.findByEmail("email")).thenReturn(new User());
 

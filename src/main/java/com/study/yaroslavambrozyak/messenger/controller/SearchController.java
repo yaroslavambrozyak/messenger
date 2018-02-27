@@ -27,7 +27,7 @@ public class SearchController {
     /**
      * Search for users for parameters
      * @param search parameters for search
-     * @param pageable
+     * @param pageable page
      * @return list of users
      */
     @GetMapping("/search")

@@ -38,8 +38,8 @@ public class MessageServiceImpl implements MessageService {
     /**
      * This method is used to save message
      * @param messageDTO message data
-     * @param chatId
-     * @return
+     * @param chatId chat`s id
+     * @return messageDTO
      */
     @Override
     @Transactional

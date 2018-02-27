@@ -1,5 +1,6 @@
 package com.study.yaroslavambrozyak.messenger.dto;
 
+import com.study.yaroslavambrozyak.messenger.entity.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,5 +29,5 @@ public class RegistrationDTO {
     private String password;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date birthday;
-    private boolean gender;
+    private Gender gender;
 }

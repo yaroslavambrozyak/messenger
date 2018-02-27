@@ -1,5 +1,6 @@
 package com.study.yaroslavambrozyak.messenger.dto;
 
+import com.study.yaroslavambrozyak.messenger.entity.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,5 +19,5 @@ public class UserUpdateDTO {
     private String surName;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date birthday;
-    private short gender;
+    private Gender gender;
 }

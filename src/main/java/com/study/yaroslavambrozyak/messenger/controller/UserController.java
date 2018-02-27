@@ -55,7 +55,7 @@ public class UserController {
 
     /**
      * Get all current user friends requests
-     * @param pageable
+     * @param pageable page
      * @return list of friends requests
      */
     @GetMapping("/user/friend.request")
@@ -74,7 +74,7 @@ public class UserController {
 
     /**
      * Get all current user friends
-     * @param pageable
+     * @param pageable page
      * @return list of friends
      */
     @GetMapping("/user/friends")
@@ -84,7 +84,7 @@ public class UserController {
 
     /**
      * Accept user friend request and add to user to friend list
-     * @param friendId
+     * @param friendId friend`s id
      */
     @PostMapping("/user/add/{friendId}")
     public void addToFriends(@PathVariable("friendId") long friendId) {
@@ -102,7 +102,7 @@ public class UserController {
 
     /**
      * Get all current user chats
-     * @param pageable
+     * @param pageable page
      * @return list of chats
      */
     @GetMapping("/user/chats")
@@ -112,7 +112,7 @@ public class UserController {
 
     /**
      * Get user by id
-     * @param id
+     * @param id user`s id
      * @return user data
      */
     @GetMapping("/user/{id}")
@@ -122,8 +122,8 @@ public class UserController {
 
     /**
      * Get user friend list
-     * @param id
-     * @param pageable
+     * @param id user`s id
+     * @param pageable page
      * @return list of user friends
      */
     @GetMapping("/user/{id}/friends")
@@ -133,7 +133,7 @@ public class UserController {
 
     /**
      * Get user picture
-     * @param id
+     * @param id user`s id
      * @return user picture
      * @throws IOException
      */
@@ -144,7 +144,7 @@ public class UserController {
 
     /**
      * Upload user picture
-     * @param multipartFile
+     * @param multipartFile file
      * @throws IOException
      */
     @PostMapping("/user/picture")
@@ -154,7 +154,7 @@ public class UserController {
 
     /**
      * Handle exception during picture uploading
-     * @param e
+     * @param e exception
      * @return error data
      */
     @ExceptionHandler(IOException.class)
